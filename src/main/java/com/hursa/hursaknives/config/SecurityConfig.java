@@ -1,0 +1,102 @@
+package com.hursa.hursaknives.config;
+
+import com.hursa.hursaknives.model.enums.UserRoleEnum;
+import com.hursa.hursaknives.repo.UserRepository;
+import com.hursa.hursaknives.service.HursaUserDetailsService;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+public class SecurityConfig {
+
+  private final UserRepository userRepository;
+
+  public SecurityConfig(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    return httpSecurity
+        .authorizeHttpRequests(
+            authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                    .permitAll()
+                    .requestMatchers("/", "/users/login", "/users/register", "/users/login-error")
+                    .permitAll()
+                    .requestMatchers("/offers/all")
+                    .permitAll()
+                    .requestMatchers("/error")
+                    .permitAll()
+                    .requestMatchers("/brands")
+                    .hasRole(UserRoleEnum.ADMIN.name())
+                    .anyRequest()
+                    .authenticated())
+        .formLogin(
+            formLogin ->
+                formLogin
+                    .loginPage("/users/login")
+                    .usernameParameter("email")
+                    .passwordParameter("password")
+                    .defaultSuccessUrl("/")
+                    .failureForwardUrl("/users/login-error"))
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl("/users/logout")
+                    .logoutSuccessUrl("/")
+                    .invalidateHttpSession(true))
+        .sessionManagement(
+            sessionManagement ->
+                sessionManagement
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .sessionFixation()
+                    .migrateSession()
+                    .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true)
+                    .expiredUrl("/users/login?expired"))
+        .build();
+  }
+
+  @Bean
+  public BCryptPasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public UserDetailsService userDetailsService(UserRepository userRepository) {
+    return new HursaUserDetailsService(userRepository);
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager() throws Throwable {
+
+    return authenticationManagerBuilder().build();
+  }
+
+  private AuthenticationManagerBuilder authenticationManagerBuilder() throws Exception {
+    AuthenticationManagerBuilder authenticationManagerBuilder =
+        new AuthenticationManagerBuilder(
+            new ObjectPostProcessor<>() {
+              @Override
+              public <O> O postProcess(O object) {
+                return object;
+              }
+            });
+    authenticationManagerBuilder.eraseCredentials(false);
+    authenticationManagerBuilder
+        .userDetailsService(userDetailsService(userRepository))
+        .passwordEncoder(passwordEncoder());
+    return authenticationManagerBuilder;
+  }
+}
