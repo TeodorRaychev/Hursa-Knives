@@ -1,23 +1,9 @@
 <!DOCTYPE html>
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head th:replace="~{fragments/commons :: head}"></head>
 <body>
-<h1>Hursa Knives</h1>
-<th:block sec:authorize="isAuthenticated()">
-    <p>Welcome,
-        <th:block sec:authentication="name"></th:block>
-    </p>
-</th:block>
-<th:block sec:authorize="!isAuthenticated()">
-    <a th:href="@{/users/login}" class="btn btn-outline-secondary">Login</a>
-    <a th:href="@{/users/register}" class="btn btn-outline-secondary">Register</a>
-</th:block>
-<th:block sec:authorize="isAuthenticated()">
-    <form th:action="@{/users/logout}" method="post">
-        <button type="submit" class="btn btn-outline-secondary">Logout</button>
-    </form>
-</th:block>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
 </body>
 </html>

@@ -24,7 +24,7 @@ logging:
           descriptor: TRACE
         SQL: DEBUG
       nodeValue: WARN
-    #    org.springframework.security: TRACE
+    org.springframework.security: TRACE
     blog: WARN
 
 server:

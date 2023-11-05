@@ -6,6 +6,7 @@ import com.hursa.hursaknives.service.HursaUserDetailsService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,9 +20,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
   private final UserRepository userRepository;
+  private final Environment environment;
 
-  public SecurityConfig(UserRepository userRepository) {
+  public SecurityConfig(UserRepository userRepository, Environment environment) {
     this.userRepository = userRepository;
+    this.environment = environment;
   }
 
   @Bean
@@ -34,11 +37,9 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/", "/users/login", "/users/register", "/users/login-error")
                     .permitAll()
-                    .requestMatchers("/offers/all")
-                    .permitAll()
                     .requestMatchers("/error")
                     .permitAll()
-                    .requestMatchers("/brands")
+                    .requestMatchers("/admin")
                     .hasRole(UserRoleEnum.ADMIN.name())
                     .anyRequest()
                     .authenticated())
@@ -52,10 +53,7 @@ public class SecurityConfig {
                     .failureForwardUrl("/users/login-error"))
         .logout(
             logout ->
-                logout
-                    .logoutUrl("/users/logout")
-                    .logoutSuccessUrl("/")
-                    .invalidateHttpSession(true))
+                logout.logoutUrl("/users/logout").logoutSuccessUrl("/").invalidateHttpSession(true))
         .sessionManagement(
             sessionManagement ->
                 sessionManagement
@@ -63,8 +61,15 @@ public class SecurityConfig {
                     .sessionFixation()
                     .migrateSession()
                     .maximumSessions(1)
-                    .maxSessionsPreventsLogin(true)
+                    .maxSessionsPreventsLogin(false)
                     .expiredUrl("/users/login?expired"))
+        .rememberMe(
+            rememberMe ->
+                rememberMe
+                    .key(environment.getProperty("hursa.remember.me.key"))
+                    .rememberMeParameter("rememberMe")
+                    .tokenValiditySeconds(60 * 60 * 24 * 30)
+                    .rememberMeCookieName("rememberMe"))
         .build();
   }
 

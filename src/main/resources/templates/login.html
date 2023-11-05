@@ -2,6 +2,7 @@
 <html lang="en">
 <head th:replace="~{fragments/commons :: head}"></head>
 <body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
 <form class="mx-auto w-25 bg-blur" th:action="@{/users/login}" th:method="post">
     <div class="form-group">
         <div class="label-holder text-white d-flex justify-content-center">
@@ -21,6 +22,13 @@
             <i class="fas fa-eye-slash" id="togglePassword"
                style="cursor: pointer"></i>
         </span>
+        </div>
+        <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="rememberMe"
+                   name="rememberMe">
+            <label class="form-check-label" for="rememberMe">
+                Remember me
+            </label>
         </div>
     </div>
     <div class="button-holder d-flex justify-content-center">
