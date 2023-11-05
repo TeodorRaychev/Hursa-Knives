@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head th:fragment="head">
     <meta charset="UTF-8">
@@ -13,6 +14,68 @@
     <link rel="stylesheet" href="/css/reset-css.css"/>
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/style.css"/>
+    <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"
+    ></script>
     <script src="/js/passwordToggle.js" defer></script>
 </head>
+<div th:fragment="nav" class="container-fluid p-0 data-mdb-disabled" style="user-select: none;">
+    <nav class="navbar navbar-expand-xl justify-content-between" style="background-color: #b4b4b4">
+        <a th:href="@{/}" class="navbar-brand text-dark">
+            <h1 class="nav-item mt-1">Hursa Knives</h1>
+        </a>
+        <div class="nav-item mt-2">
+            <th:block sec:authorize="!isAuthenticated()">
+                <a th:href="@{/users/login}" class="btn btn-outline-secondary">Login</a>
+                <a th:href="@{/users/register}" class="btn btn-outline-secondary">Register</a>
+            </th:block>
+        </div>
+
+        <th:block sec:authorize="isAuthenticated()">
+            <div class="nav-item row mt-2 mr-2">
+                <p class="m-2">Welcome,
+                    <th:block sec:authentication="name"></th:block>
+                </p>
+                <th:block sec:authorize="hasAuthority('ADMIN')">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle btn btn-outline-secondary mr-2 px3 py-2"
+                               data-bs-toggle="dropdown" href="#" role="button"
+                               aria-expanded="false">Admin</a>
+                            <ul class="dropdown-menu" style="background-color: #ececec">
+                                <li><h6 class="dropdown-header">Admin Actions</h6></li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Add Admin</a>
+                                </li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Edit User</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" style="border-color: #6c757d">
+                                </li>
+                                <li><h6 class="dropdown-header">Info Actions</h6></li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Add
+                                    Contact</a></li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Edit Info</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" style="border-color: #6c757d">
+                                </li>
+                                <li><h6 class="dropdown-header">Product Actions</h6></li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Add
+                                    Product</a></li>
+                                <li class="li-hov"><a class="dropdown-item" href="#">Edit
+                                    Product</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </th:block>
+                <form th:action="@{/users/logout}" method="post">
+                    <button type="submit" class="btn btn-outline-secondary px-3 py-2">Logout
+                    </button>
+                </form>
+            </div>
+        </th:block>
+    </nav>
+</div>
 </html>

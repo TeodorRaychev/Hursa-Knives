@@ -72,3 +72,14 @@ footer {
 .badge-secondary {
     background-color: #720a75;
 }
+
+.li-hov {
+    background-color: transparent;
+    color: #6c757d;
+}
+
+.li-hov :hover {
+    background-color: #6c757d;
+    border-radius: 0.25rem;
+    color: white;
+}
