@@ -1,11 +1,15 @@
 const password = document.getElementById("togglePassword");
 const confirmPassword = document.getElementById("toggleConfirmPassword");
+const oldPassword = document.getElementById("toggleOldPassword");
 
 if (password != null) {
     password.addEventListener("click", togglePassword);
 }
 if (confirmPassword != null) {
     confirmPassword.addEventListener("click", togglePassword);
+}
+if (oldPassword != null) {
+    oldPassword.addEventListener("click", togglePassword);
 }
 
 function togglePassword(e) {

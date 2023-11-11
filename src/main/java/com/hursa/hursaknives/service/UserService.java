@@ -1,9 +1,12 @@
 package com.hursa.hursaknives.service;
 
+import com.hursa.hursaknives.model.dto.ProfileBindingModel;
 import com.hursa.hursaknives.model.dto.RegistrationBindingModel;
 import com.hursa.hursaknives.model.entity.UserEntity;
 import com.hursa.hursaknives.model.enums.UserRoleEnum;
 import com.hursa.hursaknives.repo.UserRepository;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
@@ -58,5 +61,51 @@ public class UserService {
     assert passwordEncoder.matches(registrationBindingModel.password(), userEntity.getPassword());
     assert userEntity.getPassword() != null;
     return this.userRepository.saveAndFlush(userEntity);
+  }
+
+  public Optional<ProfileBindingModel> getUserProfile(String email) {
+    Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+    return userEntity.map(user -> modelMapper.map(user, ProfileBindingModel.class));
+  }
+
+  public ProfileBindingModel updateUserProfile(ProfileBindingModel profileBindingModel) {
+    Optional<UserEntity> optionalUserEntity = userRepository.findById(profileBindingModel.getId());
+    if (optionalUserEntity.isEmpty()) {
+      throw new NoSuchElementException(
+          "User with id " + profileBindingModel.getId() + " not found");
+    }
+    if (!profileBindingModel.getPassword().equals(profileBindingModel.getConfirmPassword())) {
+      throw new IllegalArgumentException("Passwords do not match");
+    }
+    UserEntity userEntity = optionalUserEntity.get();
+    if (!profileBindingModel.getOldPassword().isEmpty()
+        && !profileBindingModel.getPassword().isEmpty()) {
+      if (!passwordEncoder.matches(
+          profileBindingModel.getOldPassword(), userEntity.getPassword())) {
+        throw new IllegalArgumentException("Incorrect current password");
+      }
+      if (passwordEncoder.matches(profileBindingModel.getPassword(), userEntity.getPassword())) {
+        throw new IllegalArgumentException("New password cannot be same as old password");
+      }
+    }
+    boolean isEdited = false;
+    if (!profileBindingModel.getEmail().equals(userEntity.getEmail())
+        || !profileBindingModel.getFirstName().equals(userEntity.getFirstName())
+        || !profileBindingModel.getLastName().equals(userEntity.getLastName())) {
+      isEdited = true;
+      userEntity
+          .setFirstName(profileBindingModel.getFirstName())
+          .setLastName(profileBindingModel.getLastName())
+          .setEmail(profileBindingModel.getEmail());
+    }
+    if (!profileBindingModel.getPassword().isEmpty()
+        && !profileBindingModel.getPassword().equals(userEntity.getPassword())) {
+      isEdited = true;
+      userEntity.setPassword(passwordEncoder.encode(profileBindingModel.getPassword()));
+    }
+    if (isEdited) {
+      userRepository.saveAndFlush(userEntity);
+    }
+    return modelMapper.map(userEntity, ProfileBindingModel.class);
   }
 }
