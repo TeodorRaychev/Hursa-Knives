@@ -10,7 +10,7 @@ spring:
   mvc:
     hiddenmethod:
       filter:
-        enabled: 'true'
+        enabled: true
   datasource:
     driverClassName: org.postgresql.Driver
     password: ${PASSWORD:postgres}
@@ -34,5 +34,6 @@ hursa:
   admin:
     email: ${ADMIN_EMAIL:admin@hursa.com}
     password: ${ADMIN_PASSWORD:admin}
-  remember.me.key: ${REMEMBER_ME_KEY:secret}
+  rememberme:
+    key: ${REMEMBER_ME_KEY:secret}
 

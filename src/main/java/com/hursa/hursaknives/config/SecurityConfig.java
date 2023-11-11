@@ -66,7 +66,7 @@ public class SecurityConfig {
         .rememberMe(
             rememberMe ->
                 rememberMe
-                    .key(environment.getProperty("hursa.remember.me.key"))
+                    .key(environment.getProperty("hursa.rememberme.key"))
                     .rememberMeParameter("rememberMe")
                     .tokenValiditySeconds(60 * 60 * 24 * 30)
                     .rememberMeCookieName("rememberMe"))
