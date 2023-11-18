@@ -33,6 +33,9 @@ public class ChangePasswordValidator
             .findById(value.getId())
             .orElseThrow(
                 () -> new IllegalArgumentException("User with id " + value.getId() + " not found"));
+    if (value.getPassword() == null && value.getConfirmPassword() == null) {
+      return true;
+    }
     boolean isValid = value.getPassword().isEmpty() && value.getConfirmPassword().isEmpty();
     if (passwordEncoder.matches(value.getOldPassword(), byId.getPassword())
         && !passwordEncoder.matches(value.getPassword(), byId.getPassword())

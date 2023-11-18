@@ -1,13 +1,15 @@
 package com.hursa.hursaknives.model.dto;
 
+import com.hursa.hursaknives.model.enums.UserRoleEnum;
 import com.hursa.hursaknives.model.validation.ChangePassword;
 import com.hursa.hursaknives.model.validation.EmailFound;
 import com.hursa.hursaknives.model.validation.FieldMatch;
 import com.hursa.hursaknives.model.validation.PasswordFound;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +36,8 @@ public class ProfileBindingModel {
   @Email
   String email;
 
-  @NotNull String oldPassword;
-  @NotNull String password;
-  @NotNull String confirmPassword;
+  String oldPassword;
+  String password;
+  String confirmPassword;
+  Set<UserRoleEnum> roles = new HashSet<>();
 }
