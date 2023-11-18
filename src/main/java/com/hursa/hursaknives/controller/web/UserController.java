@@ -7,11 +7,13 @@ import com.hursa.hursaknives.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,16 +54,17 @@ public class UserController {
     return "login";
   }
 
-  @GetMapping("/register")
+  @GetMapping(value = {"/register", "/register/admin"})
   public String register(Model model) {
     if (!model.containsAttribute("registrationBindingModel")) {
       model.addAttribute(
-          "registrationBindingModel", new RegistrationBindingModel(null, null, null, null, null));
+          "registrationBindingModel",
+          new RegistrationBindingModel(null, null, null, null, null, null));
     }
     return "register";
   }
 
-  @PostMapping("/register")
+  @PostMapping(value = {"/register", "/register/admin"})
   public String registerPost(
       @Valid RegistrationBindingModel registrationBindingModel,
       BindingResult bindingResult,
@@ -72,10 +75,17 @@ public class UserController {
       rAtt.addFlashAttribute(
           "org.springframework.validation.BindingResult.registrationBindingModel", bindingResult);
       rAtt.addFlashAttribute("errorMessage", "Unable to register");
+      if (isAdmin()) {
+        return "redirect:/users/register/admin";
+      }
       return "redirect:/users/register";
     }
     userService.registerUser(registrationBindingModel);
 
+    if (isAdmin()) {
+      rAtt.addFlashAttribute("successMessage", "User registered successfully");
+      return "redirect:/users/register/admin";
+    }
     authService.autoLogin(registrationBindingModel.email(), registrationBindingModel.password());
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (!authentication.getName().equals("anonymousUser")) {
@@ -92,7 +102,7 @@ public class UserController {
     return "profile";
   }
 
-  @PostMapping("/profile/{id}")
+  @PostMapping(value = {"/profile/{id}", "/admin/edit/{id}"})
   public String editProfile(
       @PathVariable Long id,
       @Valid ProfileBindingModel profileBindingModel,
@@ -103,12 +113,18 @@ public class UserController {
       rAtt.addFlashAttribute(
           "org.springframework.validation.BindingResult.userProfile", bindingResult);
       rAtt.addFlashAttribute("errorMessage", "Unable to update profile");
+      if (isAdmin()) {
+        return "redirect:/users/admin/edit/" + id;
+      }
       return "redirect:/users/profile/" + id;
     }
     ProfileBindingModel updatedProfileBindingModel =
         userService.updateUserProfile(profileBindingModel);
     rAtt.addFlashAttribute("userProfile", updatedProfileBindingModel);
     rAtt.addFlashAttribute("successMessage", "Profile updated successfully");
+    if (isAdmin()) {
+      return "redirect:/users/admin/edit/" + id;
+    }
     return "redirect:/users/profile/" + id;
   }
 
@@ -125,5 +141,30 @@ public class UserController {
     model.addAttribute("badCredentials", true);
     model.addAttribute("errorMessage", "Invalid email or password");
     return "login";
+  }
+
+  @GetMapping("/admin/edit")
+  public String getAllUsers(Model model) {
+    model.addAttribute("users", userService.getAllUsers());
+    return "users";
+  }
+
+  @GetMapping("/admin/edit/{id}")
+  public String editUser(@PathVariable Long id, Model model) {
+    model.addAttribute("userProfile", userService.findById(id));
+    return "profile";
+  }
+
+  @DeleteMapping("/admin/delete/{id}")
+  public String deleteUser(@PathVariable Long id) {
+    userService.deleteUser(id);
+    return "redirect:/users/admin/edit";
+  }
+
+  private static boolean isAdmin() {
+    return SecurityContextHolder.getContext()
+        .getAuthentication()
+        .getAuthorities()
+        .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
   }
 }

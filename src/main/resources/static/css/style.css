@@ -13,7 +13,6 @@
 
 body {
     background-color: #ececec;
-    margin-bottom: 5rem;
 }
 
 textarea {
@@ -94,4 +93,62 @@ footer {
 form.main-form {
     background-image: linear-gradient(to bottom right, rgba(70, 70, 70, 0.8), rgba(10, 10, 10, 0.8));
     border-radius: 1rem;
+}
+
+.modal-content {
+    background-color: #ececec;
+    color: #6c757d;
+}
+
+.btn-close {
+    box-sizing: content-box;
+    width: 1em;
+    height: 1em;
+    padding: .25em .25em;
+    color: #000;
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    border: 0;
+    border-radius: .25rem;
+    opacity: .5;
+}
+
+.btn-close:hover {
+    cursor: pointer;
+}
+
+.page-not-found h2 {
+    font-size: 8rem;
+}
+
+.page-not-found h2 i {
+    font-size: 7rem;
+}
+
+.page-not-found h3 {
+    font-size: 2rem;
+}
+
+.page-not-found .bg-light {
+    width: 50%;
+    padding: 50px;
+    text-align: center;
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 767px) {
+    .page-not-found h2 {
+        font-size: 4rem;
+    }
+
+    .page-not-found h3 {
+        font-size: 1rem;
+    }
+
+    .page-not-found .bg-light {
+        width: 100%;
+    }
 }

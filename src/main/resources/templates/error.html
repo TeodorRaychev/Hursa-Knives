@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="~{fragments/commons :: head}"></head>
+
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<div class="page-not-found pt-5">
+    <div class="bg-light shadow">
+        <h2 class="text-secondary ">4<i class="bi bi-bug"></i>4</h2>
+        <h3 class="mt-4 text-secondary">Oops! Page Not Found</h3>
+        <div class="mt-5">
+            <a href="/" type="button" class="btn m-2 m-md-0 btn-outline-secondary"><i
+                    class="bi bi-house-door-fill"></i> Back Home</a>
+            <a href="/contacts" type="button" class="btn m-2 m-md-0 btn-outline-success"><i
+                    class="bi bi-person-lines-fill"></i> Contact Us</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

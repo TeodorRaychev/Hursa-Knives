@@ -5,6 +5,7 @@ import com.hursa.hursaknives.model.dto.RegistrationBindingModel;
 import com.hursa.hursaknives.model.entity.UserEntity;
 import com.hursa.hursaknives.model.enums.UserRoleEnum;
 import com.hursa.hursaknives.repo.UserRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
@@ -74,11 +75,15 @@ public class UserService {
       throw new NoSuchElementException(
           "User with id " + profileBindingModel.getId() + " not found");
     }
-    if (!profileBindingModel.getPassword().equals(profileBindingModel.getConfirmPassword())) {
+    if (profileBindingModel.getPassword() != null
+        && profileBindingModel.getConfirmPassword() != null
+        && !profileBindingModel.getPassword().equals(profileBindingModel.getConfirmPassword())) {
       throw new IllegalArgumentException("Passwords do not match");
     }
     UserEntity userEntity = optionalUserEntity.get();
-    if (!profileBindingModel.getOldPassword().isEmpty()
+    if (profileBindingModel.getOldPassword() != null
+        && profileBindingModel.getPassword() != null
+        && !profileBindingModel.getOldPassword().isEmpty()
         && !profileBindingModel.getPassword().isEmpty()) {
       if (!passwordEncoder.matches(
           profileBindingModel.getOldPassword(), userEntity.getPassword())) {
@@ -98,14 +103,35 @@ public class UserService {
           .setLastName(profileBindingModel.getLastName())
           .setEmail(profileBindingModel.getEmail());
     }
-    if (!profileBindingModel.getPassword().isEmpty()
+    if (profileBindingModel.getPassword() != null
+        && !profileBindingModel.getPassword().isEmpty()
         && !profileBindingModel.getPassword().equals(userEntity.getPassword())) {
       isEdited = true;
       userEntity.setPassword(passwordEncoder.encode(profileBindingModel.getPassword()));
+    }
+    if (profileBindingModel.getRoles() != null
+        && !profileBindingModel.getRoles().isEmpty()
+        && !profileBindingModel.getRoles().equals(userEntity.getRoles())) {
+      isEdited = true;
+      userEntity.setRoles(profileBindingModel.getRoles());
     }
     if (isEdited) {
       userRepository.saveAndFlush(userEntity);
     }
     return modelMapper.map(userEntity, ProfileBindingModel.class);
+  }
+
+  public List<UserEntity> getAllUsers() {
+    return userRepository.findAll();
+  }
+
+  public ProfileBindingModel findById(Long id) {
+    return modelMapper.map(
+        userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found")),
+        ProfileBindingModel.class);
+  }
+
+  public void deleteUser(Long id) {
+    userRepository.deleteById(id);
   }
 }

@@ -27,7 +27,7 @@ public class PasswordFoundValidator
 
   @Override
   public boolean isValid(ProfileBindingModel value, ConstraintValidatorContext context) {
-    if (value.getOldPassword().isEmpty()) {
+    if (value.getOldPassword() == null || value.getOldPassword().isEmpty()) {
       return true;
     }
     UserEntity userEntity =

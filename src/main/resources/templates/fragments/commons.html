@@ -8,6 +8,8 @@
     <title>Hursa Knives</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
           integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
           crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -33,66 +35,100 @@
         </symbol>
     </svg>
 </head>
-<div th:fragment="nav" class="container-fluid p-0 data-mdb-disabled" style="user-select: none;"
+<nav class="navbar navbar-expand-xl data-mdb-disabled zindex-popover navbar-light"
+     style="background-color: #b4b4b4; user-select: none;" th:fragment="nav"
      th:object="${userProfile}">
-    <nav class="navbar navbar-expand-xl justify-content-between" style="background-color: #b4b4b4">
-        <a th:href="@{/}" class="navbar-brand text-dark">
-            <h1 class="nav-item mt-1">Hursa Knives</h1>
+    <div class="container-fluid">
+        <a th:href="@{/}" class="navbar-brand" style="color: rgba(0,0,0,.5)">
+            <h1 class="mt-1">Hursa Knives</h1>
         </a>
-        <div class="nav-item mt-2">
-            <th:block sec:authorize="!isAuthenticated()">
-                <a th:href="@{/users/login}" class="btn btn-outline-secondary">Login</a>
-                <a th:href="@{/users/register}" class="btn btn-outline-secondary">Register</a>
-            </th:block>
-        </div>
-
-        <th:block sec:authorize="isAuthenticated()">
-            <div class="nav-item row mt-2 mr-2">
-                <p class="m-2">Welcome,
-                    <th:block sec:authentication="name"></th:block>
-                </p>
-                <th:block sec:authorize="hasAuthority('ADMIN')">
-                    <ul class="nav nav-pills">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle btn btn-outline-secondary mr-2 px3 py-2"
-                               data-bs-toggle="dropdown" href="#" role="button"
-                               aria-expanded="false">Admin</a>
-                            <ul class="dropdown-menu" style="background-color: #ececec">
-                                <li><h6 class="dropdown-header">Admin Actions</h6></li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Add Admin</a>
-                                </li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Edit User</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider" style="border-color: #6c757d">
-                                </li>
-                                <li><h6 class="dropdown-header">Info Actions</h6></li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Add
-                                    Contact</a></li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Edit Info</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider" style="border-color: #6c757d">
-                                </li>
-                                <li><h6 class="dropdown-header">Product Actions</h6></li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Add
-                                    Product</a></li>
-                                <li class="li-hov"><a class="dropdown-item" href="#">Edit
-                                    Product</a></li>
-                            </ul>
+        <div>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <th:block sec:authorize="!isAuthenticated()">
+                        <li class="nav-item">
+                            <!--                        <div class=mt-2">-->
+                            <a th:href="@{/users/login}"
+                               class="nav-link btn btn-outline-secondary m-2">Login</a>
                         </li>
-                    </ul>
-                </th:block>
-                <a class="btn btn-outline-secondary mr-2 px3 py-2"
-                   th:href="@{/users/profile/{id}(id=${userProfile.getId()})}">Profile</a>
-                <form th:action="@{/users/logout}" method="post">
-                    <button type="submit" class="btn btn-outline-secondary px-3 py-2">Logout
-                    </button>
-                </form>
+                        <li class="nav-item">
+                            <a th:href="@{/users/register}"
+                               class="nav-link btn btn-outline-secondary m-2">Register</a>
+                        </li>
+                        <!--                        </div>-->
+                    </th:block>
+                    <th:block sec:authorize="isAuthenticated()">
+                        <!--                    <div class="nav-item row mt-2 mr-2">-->
+                        <li class="nav-item text-center align-content-center align-self-center align-items-center">
+                            <p class="my-3 d-block" style="color: rgba(0,0,0,.5)">Welcome,
+                                <th:block sec:authentication="name"></th:block>
+                            </p>
+                        </li>
+                        <th:block sec:authorize="hasAuthority('ROLE_ADMIN')">
+                            <!--                            <li class="nav-item dropdown"></li>-->
+                            <!--                            <ul class="nav nav-pills">-->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle btn btn-outline-secondary m-2 py-2"
+                                   data-bs-toggle="dropdown" href="#" role="button"
+                                   aria-expanded="false">Admin</a>
+                                <ul class="dropdown-menu" style="background-color: #ececec">
+                                    <li><h6 class="dropdown-header">Admin Actions</h6></li>
+                                    <li class="li-hov"><a class="dropdown-item"
+                                                          th:href="@{/users/register/admin}">Add
+                                        User</a>
+                                    </li>
+                                    <li class="li-hov"><a class="dropdown-item"
+                                                          th:href="@{/users/admin/edit}">Edit
+                                        User</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider"
+                                            style="border-color: #6c757d">
+                                    </li>
+                                    <li><h6 class="dropdown-header">Info Actions</h6></li>
+                                    <li class="li-hov"><a class="dropdown-item" href="#">Add
+                                        Contact</a></li>
+                                    <li class="li-hov"><a class="dropdown-item" href="#">Edit
+                                        Info</a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider"
+                                            style="border-color: #6c757d">
+                                    </li>
+                                    <li><h6 class="dropdown-header">Product Actions</h6></li>
+                                    <li class="li-hov"><a class="dropdown-item" href="#">Add
+                                        Product</a></li>
+                                    <li class="li-hov"><a class="dropdown-item" href="#">Edit
+                                        Product</a></li>
+                                </ul>
+                            </li>
+                            <!--                            </ul>-->
+                        </th:block>
+                        <li class="nav-item">
+                            <a class="nav-link btn btn-outline-secondary m-2 py-2"
+                               th:href="@{/users/profile/{id}(id=${userProfile.getId()})}">Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <form th:action="@{/users/logout}" method="post"
+                                  class="nav-link btn btn-outline-secondary m-2 py-1 ">
+                                <button type="submit" class="btn bg-transparent p-1"
+                                        style="color: rgba(0,0,0,.5)">
+                                    Logout
+                                </button>
+                            </form>
+                        </li>
+                        <!--                    </div>-->
+                    </th:block>
+                </ul>
             </div>
-        </th:block>
-    </nav>
-</div>
+        </div>
+    </div>
+</nav>
 <th:block th:fragment="successMessage" th:object="${successMessage}"
           th:if="${successMessage != null}">
     <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
@@ -119,6 +155,19 @@
             <div th:text="${errorMessage}" class="ml-2">
                 An example danger alert with an icon
             </div>
+        </div>
+    </div>
+</th:block>
+
+<th:block th:fragment="error">
+    <div class="d-flex align-items-center justify-content-center vh-100">
+        <div class="text-center">
+            <h1 class="display-1 fw-bold">404</h1>
+            <p class="fs-3"><span class="text-danger">Oops!</span> Page not found.</p>
+            <p class="lead">
+                The page you’re looking for does not exist.
+            </p>
+            <a href="/" class="btn btn-outline-secondary">Go Home</a>
         </div>
     </div>
 </th:block>

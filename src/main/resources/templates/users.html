@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="~{fragments/commons :: head}"></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<table class="table table-dark table-striped table-hover table-bordered caption-top" id="table">
+    <caption>List of users</caption>
+    <thead>
+    <tr>
+        <th colspan="6" class="ml-5 pl-5 h4">USERS TABLE</th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th scope="col" id="sortById">ID <i class="bi bi-arrow-down-up"></i></th>
+        <th scope="col" id="sortByFirstName">First Name <i class="bi bi-arrow-down-up"></i></th>
+        <th scope="col" id="sortByLastName">Last Name <i class="bi bi-arrow-down-up"></i></th>
+        <th scope="col" id="sortByEmail">Email <i class="bi bi-arrow-down-up"></i></th>
+        <th scope="col" id="sortByRoles">Roles <i class="bi bi-arrow-down-up"></i></th>
+        <th scope="col">Actions</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    <tr th:each="user : ${users}">
+        <td th:text="${user.getId()}"></td>
+        <td th:text="${user.getFirstName()}"></td>
+        <td th:text="${user.getLastName()}"></td>
+        <td th:text="${user.getEmail()}"></td>
+        <td th:text="${user.getRoles()}"></td>
+        <td><a class="btn btn-outline-secondary mr-2"
+               th:href="@{/users/admin/edit/{id}(id=${user.getId()})}">Edit</a>
+            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal"
+                    th:attr="data-bs-target=${'#deleteUserWithID' + user.getId()}">
+                Delete
+            </button>
+            <div class="modal fade" th:attr="id=${'deleteUserWithID' + user.getId()}" tabindex="-1"
+                 th:aria-labelledby="${'#deleteUserLabel' + user.getId()}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" th:id="${'deleteUserLabel' + user.getId()}">
+                                DELETE USER</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure you want to delete user with email
+                                <th:block th:text="${user.getEmail()}"></th:block>
+                                and user roles
+                                <th:block th:text="${user.getRoles()}"></th:block>
+                                ?
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    data-bs-dismiss="modal">Cancel
+                            </button>
+                            <form th:action="@{/users/admin/delete/{id}(id=${user.getId()})}"
+                                  th:method="delete">
+                                <button type="submit" class="btn btn-outline-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+<script src="/js/sortTable.js"></script>
+</body>
+</html>
