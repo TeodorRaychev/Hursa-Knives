@@ -91,7 +91,7 @@ footer {
 }
 
 form.main-form {
-    background-image: linear-gradient(to bottom right, rgba(70, 70, 70, 0.8), rgba(10, 10, 10, 0.8));
+    background-image: linear-gradient(to bottom right, rgba(100, 100, 100, 1), rgba(100, 100, 100, 0.525));
     border-radius: 1rem;
 }
 
@@ -121,7 +121,7 @@ form.main-form {
 }
 
 .page-not-found h2 i {
-    font-size: 7rem;
+    font-size: 6.25rem;
 }
 
 .page-not-found h3 {
@@ -132,23 +132,34 @@ form.main-form {
     width: 50%;
     padding: 50px;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 0.75rem;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
 }
 
 @media (max-width: 767px) {
     .page-not-found h2 {
-        font-size: 4rem;
+        font-size: 5.25rem;
+    }
+
+    .page-not-found h2 i {
+        font-size: 4.125rem;
     }
 
     .page-not-found h3 {
-        font-size: 1rem;
+        font-size: 1.5rem;
     }
 
     .page-not-found .bg-light {
         width: 100%;
+        border-radius: 0;
     }
+}
+
+.login-container {
+    background-image: linear-gradient(to bottom right, rgba(100, 100, 100, 1), rgba(100, 100, 100, 0.525));
+    border-radius: 1rem;
 }

@@ -10,7 +10,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -19,33 +18,30 @@ import org.springframework.util.Assert;
 public class UserService {
 
   private final UserRepository userRepository;
-  private final Environment environment;
   private final BCryptPasswordEncoder passwordEncoder;
   private final ModelMapper modelMapper;
 
   public UserService(
       UserRepository userRepository,
-      Environment environment,
       BCryptPasswordEncoder bCryptPasswordEncoder,
       ModelMapper modelMapper) {
     this.userRepository = userRepository;
-    this.environment = environment;
     this.passwordEncoder = bCryptPasswordEncoder;
     this.modelMapper = modelMapper;
   }
 
-  public void initAdmin() {
+  public UserEntity initAdmin(String firstName, String lastName, String email, String password) {
     if (userRepository.count() == 0) {
-
-      UserEntity userEntity = new UserEntity();
-      userEntity.setFirstName("Hursa");
-      userEntity.setLastName("Admin");
-      userEntity.setEmail(environment.getProperty("hursa.admin.email"));
-      userEntity.setPassword(
-          passwordEncoder.encode(environment.getProperty("hursa.admin.password")));
-      userEntity.setRoles(Set.of(UserRoleEnum.ADMIN, UserRoleEnum.USER));
-      userRepository.saveAndFlush(userEntity);
+      UserEntity userEntity =
+          new UserEntity()
+              .setFirstName(firstName)
+              .setLastName(lastName)
+              .setEmail(email)
+              .setPassword(passwordEncoder.encode(password))
+              .setRoles(Set.of(UserRoleEnum.ADMIN, UserRoleEnum.USER));
+      return userRepository.saveAndFlush(userEntity);
     }
+    return null;
   }
 
   public UserEntity registerUser(RegistrationBindingModel registrationBindingModel) {
