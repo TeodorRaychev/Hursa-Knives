@@ -6,6 +6,7 @@ import com.hursa.hursaknives.service.AuthService;
 import com.hursa.hursaknives.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import java.util.Optional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,13 @@ public class UserController {
   public UserController(UserService userService, AuthService authService) {
     this.userService = userService;
     this.authService = authService;
+  }
+
+  private static boolean isAdmin() {
+    return SecurityContextHolder.getContext()
+        .getAuthentication()
+        .getAuthorities()
+        .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
   }
 
   @ModelAttribute("userProfile")
@@ -156,15 +164,16 @@ public class UserController {
   }
 
   @DeleteMapping("/admin/delete/{id}")
-  public String deleteUser(@PathVariable Long id) {
-    userService.deleteUser(id);
-    return "redirect:/users/admin/edit";
-  }
+  public String deleteUser(@PathVariable Long id, RedirectAttributes rAtt) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Optional<ProfileBindingModel> userProfile1 = userService.getUserProfile(authentication.getName());
+    if(userProfile1.isPresent() && userProfile1.get().getId().equals(id)){
+        rAtt.addFlashAttribute("errorMessage", "You cannot delete yourself");
+        return "redirect:/users/admin/edit";
+    }
 
-  private static boolean isAdmin() {
-    return SecurityContextHolder.getContext()
-        .getAuthentication()
-        .getAuthorities()
-        .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+    userService.deleteUser(id);
+    rAtt.addFlashAttribute("successMessage", "User deleted successfully");
+    return "redirect:/users/admin/edit";
   }
 }

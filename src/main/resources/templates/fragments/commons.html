@@ -5,6 +5,7 @@
 >
 <head th:fragment="head">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>Hursa Knives</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet"
@@ -131,7 +132,8 @@
 </nav>
 <th:block th:fragment="successMessage" th:object="${successMessage}"
           th:if="${successMessage != null}">
-    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true"
+         style="z-index: 10000; position: relative">
         <div class="alert alert-success d-flex align-items-center mr-2 mt-2 md-2 col-xxl-3 col-xl-4 col-lg-6 col-m-6 col-sm-6 col-xs-12"
              role="alert" style="position: absolute; right: 0">
             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img"
