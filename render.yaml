@@ -7,6 +7,8 @@ services:
     branch: deployment
     healthCheckPath: /
     envVars:
+      - key: PORT
+        value: 8080
       - key: USERNAME
         fromDatabase:
           name: hursa_knives
