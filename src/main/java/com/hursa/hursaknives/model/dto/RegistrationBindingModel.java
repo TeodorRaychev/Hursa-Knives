@@ -6,9 +6,8 @@ import com.hursa.hursaknives.model.validation.UniqueUserEmail;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.experimental.Accessors;
-
 import java.util.List;
+import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 @FieldMatch(field = "password", fieldMatch = "confirmPassword", message = "Passwords must match")
