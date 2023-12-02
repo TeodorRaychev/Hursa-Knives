@@ -166,10 +166,11 @@ public class UserController {
   @DeleteMapping("/admin/delete/{id}")
   public String deleteUser(@PathVariable Long id, RedirectAttributes rAtt) {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    Optional<ProfileBindingModel> userProfile1 = userService.getUserProfile(authentication.getName());
-    if(userProfile1.isPresent() && userProfile1.get().getId().equals(id)){
-        rAtt.addFlashAttribute("errorMessage", "You cannot delete yourself");
-        return "redirect:/users/admin/edit";
+    Optional<ProfileBindingModel> userProfile1 =
+        userService.getUserProfile(authentication.getName());
+    if (userProfile1.isPresent() && userProfile1.get().getId().equals(id)) {
+      rAtt.addFlashAttribute("errorMessage", "You cannot delete yourself");
+      return "redirect:/users/admin/edit";
     }
 
     userService.deleteUser(id);

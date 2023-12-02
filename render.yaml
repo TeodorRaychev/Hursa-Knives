@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: hursa-knives
+    runtime: docker
+    region: frankfurt
+    plan: free
+    branch: deployment
+    healthCheckPath: /
+    envVars:
+      - key: USERNAME
+        fromDatabase:
+          name: hursa_knives
+          property: user
+      - key: PASSWORD
+        fromDatabase:
+          name: hursa_knives
+          property: password
+      - key: HOST
+        fromDatabase:
+          name: hursa_knives
+          property: host
+      - key: PORT
+        fromDatabase:
+          name: hursa_knives
+          property: port
+      - fromGroup: init-settings
+
+databases:
+  - name: hursa_knives
+    databaseName: hursa_knives
+    user: hursa_knives
+    region: frankfurt
+    plan: free
+
+envVarGroups:
+  - name: init-settings
+    envVars:
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: REMEMBER_ME_KEY
+        generateValue: true

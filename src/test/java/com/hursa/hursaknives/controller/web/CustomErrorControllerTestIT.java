@@ -3,7 +3,6 @@ package com.hursa.hursaknives.controller.web;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.hursa.hursaknives.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,12 +17,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 class CustomErrorControllerTestIT {
   private final MockMvc mockMvc;
 
-  private final UserService userService;
-
   @Autowired
-  CustomErrorControllerTestIT(MockMvc mockMvc, UserService userService) {
+  CustomErrorControllerTestIT(MockMvc mockMvc) {
     this.mockMvc = mockMvc;
-    this.userService = userService;
   }
 
   @Test
