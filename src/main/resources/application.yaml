@@ -15,7 +15,7 @@ spring:
     driverClassName: org.postgresql.Driver
     password: ${PASSWORD:postgres}
     username: ${USERNAME:postgres}
-    url: jdbc:postgresql://${HOST:localhost}:${PORT:5432}/hursa_knives?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
+    url: jdbc:postgresql://${HOST:localhost}:${POSTGRES_PORT:5432}/hursa_knives?allowPublicKeyRetrieval=true&useSSL=false&createDatabaseIfNotExist=true&serverTimezone=UTC
 logging:
   level:
     org:

@@ -19,7 +19,7 @@ services:
         fromDatabase:
           name: hursa_knives
           property: host
-      - key: PORT
+      - key: POSTGRES_PORT
         fromDatabase:
           name: hursa_knives
           property: port
