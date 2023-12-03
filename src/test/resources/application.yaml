@@ -14,3 +14,7 @@ hursa:
   rememberme:
     key: secret
 
+cloudinary:
+  cloudName: ${CLOUDINARY_CLOUD_NAME:hursa-knives}
+  apiKey: ${CLOUDINARY_API_KEY:123456789}
+  apiSecret: ${CLOUDINARY_API_SECRET:123456789}

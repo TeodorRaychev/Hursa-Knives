@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+
+<head th:replace="~{fragments/commons :: head}"><title>Product Details</title></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+
+<div class="container mt-5 mb-5" th:object="${product}">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-11">
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="images p-3">
+                            <div class="text-center p-4">
+                                <img id="main-image" alt="product image"
+                                     th:src="@{${!product.images().isEmpty()? product.images().get(0):'/images/no_image_icon.png'}}"
+                                     width="300"/>
+                            </div>
+                            <div class="thumbnail text-center">
+                                <img th:each="image : ${product.images()}"
+                                     onclick="change_image(this)"
+                                     th:src="@{${image}}" alt="product image" width="130"
+                                     class="mx-2 img-thumbnail">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a th:href="@{/products}"
+                                   class="text-secondary text-decoration-none">
+                                    <div class="d-flex align-items-center"><i
+                                            class="fa fa-long-arrow-left"></i> <span
+                                            class="ml-1">Back</span></div>
+                                </a>
+                                <i class="fa fa-shopping-cart text-muted"></i>
+                            </div>
+                            <div class="mt-4 mb-3">
+                                <h5 class="text-uppercase" th:text="${product.name}">Product
+                                    Name</h5>
+                                <div class="price d-flex flex-row align-items-center"><span
+                                        class="act-price">Price: <th:block
+                                        th:text="${product.price}">$20</th:block> BGN</span>
+                                </div>
+                            </div>
+                            <p class="about" th:text="${product.description}">Product
+                                Description</p>
+                            <div class="cart mt-4 align-items-center">
+                                <button class="btn btn-danger text-uppercase mr-2 px-4">Add to
+                                    cart
+                                </button>
+                                <i class="fa fa-heart text-muted"></i> <i
+                                    class="fa fa-share-alt text-muted"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function change_image(image) {
+        let container = document.getElementById("main-image");
+        container.src = image.src;
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+    });
+</script>
+</html>

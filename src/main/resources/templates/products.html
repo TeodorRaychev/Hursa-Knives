@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:replace="~{fragments/commons :: head}"><title>Products</title></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<th:block th:replace="~{fragments/commons :: successMessage}"></th:block>
+
+
+<div class="container-fluid mt-5" th:object="${products}">
+    <div class="row w-100 mx-auto justify-content-center">
+        <div class="mt-4 col-xxl-3 col-xl-4 col-lg-5 col-md-6" th:each="product: ${products}">
+
+            <div class="card">
+                <div class="image-container">
+                    <div class="image">
+                        <img th:if="${product.images.size() > 0}"
+                             th:src="@{${product.images.get(0)}}"
+                             class="img-fluid rounded thumbnail-image" alt="Product Image">
+                        <img th:unless="${product.images.size() > 0}"
+                             src="/images/no_image_icon.png"
+                             class="img-fluid rounded thumbnail-image" alt="Product Image">
+                    </div>
+                </div>
+                <div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="wishlist"><i class="fa-regular fa-heart"></i></span>
+                    </div>
+                </div>
+                <div class="product-detail-container p-2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="dress-name" th:text="${product.name}">Product Name</h5>
+                        <div class="d-flex flex-column mb-2">
+                            <span class="new-price" th:text="${product.price}">N/A</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center pt-1">
+                        <a th:href="@{/products/details/{id}(id=${product.id})}"
+                           class="btn btn-outline-success">Details</a>
+                        <th:block sec:authorize="hasRole('ADMIN')">
+                            <a th:href="@{/products/admin/edit/{id}(id=${product.id})}"
+                               class="btn btn-outline-secondary">Edit</a>
+                            <button
+                                    type="button" class="btn btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    th:attr="data-bs-target=${'#deleteProductWithID' + product.id}">
+                                Delete
+                            </button>
+                            <div class="modal fade"
+                                 th:attr="id=${'deleteProductWithID' + product.id}" tabindex="-1"
+                                 th:aria-labelledby="${'#deleteProductLabel' + product.id}"
+                                 aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title"
+                                                th:id="${'deleteProductLabel' + product.id}">
+                                                DELETE PRODUCT</h5>
+                                            <button type="button" class="btn-close"
+                                                    data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to delete product with name
+                                                <th:block th:text="${product.name}"></th:block>
+                                                ?
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                    data-bs-dismiss="modal">Cancel
+                                            </button>
+                                            <form th:action="@{/products/admin/delete/{id}(id=${product.id})}"
+                                                  th:method="delete">
+                                                <button type="submit"
+                                                        class="btn btn-outline-danger">Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                        <a href="#" class="btn btn-outline-primary">Add to cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="~{fragments/commons :: head}"><title>Add Product</title></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<th:block th:replace="~{fragments/commons :: errorMessage}"></th:block>
+
+<form class="main-form mx-auto mb-0 bg-blur col-xxl-4 col-xl-6 col-lg-8 col-m-9 col-sm-10 col-xs-12"
+      style="margin-top: 4rem"
+      th:action="@{/products/admin/add}" th:method="post" enctype="multipart/form-data"
+      th:object="${productBindingModel}">
+    <div class="form-group my-1">
+        <div class="label-holder text-white d-flex justify-content-center">
+            <label for="name" class="form-label h4 mb-2">Product Name</label>
+        </div>
+        <input autocomplete="name" type="text" class="form-control"
+               id="name" name="name" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               title="Please enter a valid product name e.g Cool Product Name"
+               th:value="${productBindingModel.name()}"
+               th:errorClass="'is-invalid text-danger wrn'"/>
+        <small class="invalid-feedback text-danger" th:errors="*{name}">Product name error
+            message</small>
+    </div>
+    <div class="form-group my-1">
+        <div class="label-holder text-white d-flex justify-content-center">
+            <label for="description" class="form-label h4 mb-2">Product Description</label>
+        </div>
+        <input autocomplete="description" type="text" class="form-control"
+               id="description" name="description" data-bs-toggle="tooltip"
+               data-bs-placement="bottom"
+               title="Please enter a valid description e.g. This product is awesome"
+               th:value="${productBindingModel.description()}"
+               th:errorClass="'is-invalid text-danger wrn'"/>
+        <small class="invalid-feedback text-danger" th:errors="*{description}">Description error
+            message</small>
+    </div>
+    <div class="form-group my-1">
+        <div class="label-holder text-white d-flex justify-content-center">
+            <label for="price" class="form-label h4 mb-2">Price</label>
+        </div>
+        <input autocomplete="price" type="text" class="form-control"
+               id="price" name="price" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               title="Please enter a valid price e.g. 50.00"
+               th:value="${productBindingModel.price()}"
+               th:errorClass="'is-invalid text-danger wrn'"/>
+        <small class="invalid-feedback text-danger" th:errors="*{price}">Price error
+            message</small>
+    </div>
+    <div class="form-group my-1">
+        <div class="label-holder text-white d-flex justify-content-center">
+            <label for="material" class="form-label h4 mb-2">Product Material</label>
+        </div>
+        <input autocomplete="material" type="text" class="form-control"
+               id="material" name="material" data-bs-toggle="tooltip" data-bs-placement="bottom"
+               title="Please enter a valid material e.g. Steel"
+               th:value="${productBindingModel.material()}"
+               th:errorClass="'is-invalid text-danger wrn'"/>
+        <small class="invalid-feedback text-danger" th:errors="*{material}">Quantity error
+            message</small>
+    </div>
+
+    <div class="form-group my-1">
+        <div class="label-holder text-white d-flex justify-content-center">
+            <label for="images" class="form-label h4 mb-2">Add Images</label>
+        </div>
+        <input class="form-control" type="file" id="images" name="images" multiple>
+    </div>
+
+    <div class="button-holder d-flex justify-content-center">
+        <button type="submit" class="btn btn-warning  my-2">Add Product</button>
+    </div>
+</form>
+
+</body>
+</html>
