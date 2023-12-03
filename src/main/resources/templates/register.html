@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-<head th:replace="~{fragments/commons :: head}"></head>
+<head th:replace="~{fragments/commons :: head}"><title>Register</title></head>
 <body>
 <nav th:replace="~{fragments/commons :: nav}"></nav>
 <th:block th:replace="~{fragments/commons :: successMessage}"></th:block>
@@ -13,9 +13,9 @@
       th:action="${#strings.contains(#authentication.getAuthorities(), 'ADMIN') ? '/users/register/admin' : '/users/register'}"
       th:method="post"
       th:object="${registrationBindingModel}">
-    <div class="form-group">
+    <div class="form-group my-1">
         <div class="label-holder text-white d-flex justify-content-center">
-            <label for="email" class="form-label h3 mb-2">Email</label>
+            <label for="email" class="form-label h5 mb-2">Email</label>
         </div>
         <input autocomplete="email" type="text" class="form-control"
                id="email" name="email" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -25,9 +25,9 @@
         <small class="invalid-feedback text-danger" th:errors="*{email}">Email error
             message</small>
     </div>
-    <div class="form-group">
+    <div class="form-group my-1">
         <div class="label-holder text-white d-flex justify-content-center">
-            <label for="firstName" class="form-label h3 mb-2">First Name</label>
+            <label for="firstName" class="form-label h5 mb-2">First Name</label>
         </div>
         <input autocomplete="given-name" type="text" class="form-control"
                id="firstName" name="firstName" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -37,9 +37,9 @@
         <small class="invalid-feedback text-danger" th:errors="*{firstName}">First name error
             message</small>
     </div>
-    <div class="form-group">
+    <div class="form-group my-1">
         <div class="label-holder text-white d-flex justify-content-center">
-            <label for="lastName" class="form-label h3 mb-2">Last Name</label>
+            <label for="lastName" class="form-label h5 mb-2">Last Name</label>
         </div>
         <input autocomplete="family-name" type="text" class="form-control"
                id="lastName" name="lastName" data-bs-toggle="tooltip" data-bs-placement="bottom"
@@ -49,29 +49,30 @@
         <small class="invalid-feedback text-danger" th:errors="*{lastName}">Last name error
             message</small>
     </div>
-    <div class="form-group">
+    <div class="form-group my-1">
         <div class="label-holder text-white d-flex justify-content-center">
-            <label for="password" class="form-label h3 mb-2">Password</label>
+            <label for="password" class="form-label h5 mb-2">Password</label>
         </div>
         <div class="input-group">
             <input type="password" class="form-control" id="password" name="password"
-                   autocomplete="on" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                   autocomplete="password" data-bs-toggle="tooltip" data-bs-placement="bottom"
                    title="Please enter a valid password with at least 5 characters e.g. password123"
                    th:errorClass="'is-invalid text-danger wrn'"/>
             <span class="input-group-text">
-            <i class="fas fa-eye-slash" id="togglePassword"
-               style="cursor: pointer"></i></span>
+                <i class="fas fa-eye-slash" id="togglePassword"
+                   style="cursor: pointer"></i></span>
             <small class="invalid-feedback text-danger" th:errors="*{password}">Password
                 error</small>
         </div>
     </div>
-    <div class="form-group">
+
+    <div class="form-group my-1">
         <div class="label-holder text-white d-flex justify-content-center">
-            <label for="confirmPassword" class="form-label h3 mb-2">Confirm Password</label>
+            <label for="confirmPassword" class="form-label h5 mb-2">Confirm Password</label>
         </div>
         <div class="input-group">
             <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
-                   autocomplete="on" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                   autocomplete="password" data-bs-toggle="tooltip" data-bs-placement="bottom"
                    title="Please enter a valid password confirmation with at least 5 characters that matches the password e.g. password123"
                    th:errorClass="'is-invalid text-danger wrn'"/>
             <span class="input-group-text">
@@ -81,12 +82,13 @@
                 password error</small>
         </div>
     </div>
-    <div class="form-group">
+    <div class="form-group my-1">
         <th:block sec:authorize="hasAuthority('ROLE_ADMIN')">
             <div class="label-holder text-white d-flex justify-content-center">
-                <label for="roles" class="form-label h3 mb-2">Roles</label>
+                <label for="roles" class="form-label h5 mb-2">Roles</label>
             </div>
-            <select class="form-select mx-5 w-50 form-select-border-rounded" id="roles" name="roles"
+            <select class="form-select mx-5 w-50 form-select-border-rounded mx-auto" id="roles"
+                    name="roles"
                     multiple="multiple">
                 <option th:each="role : ${T(com.hursa.hursaknives.model.enums.UserRoleEnum).values()}"
                         th:value="${role}" th:text="${role}" th:selected="${role}"
@@ -96,12 +98,12 @@
         </th:block>
     </div>
     <div class="button-holder d-flex justify-content-center">
-        <button type="submit" class="btn btn-warning  mb-3">Register</button>
+        <button type="submit" class="btn btn-warning  my-2">Register</button>
     </div>
-    <div class="form-group">
+    <div class="form-group my-1">
         <p class="text-white text-center">
             Already have an account? <a
-                class="text-white text-decoration-none text-decoration-underline stretched-link"
+                class="text-white text-decoration-none text-decoration-underline"
                 th:href="@{/users/login}">Login
             here</a>
         </p>

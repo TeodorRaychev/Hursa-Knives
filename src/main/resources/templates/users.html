@@ -2,11 +2,12 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org"
 >
-<head th:replace="~{fragments/commons :: head}"></head>
+<head th:replace="~{fragments/commons :: head}"><title>Users</title></head>
 <body>
 <nav th:replace="~{fragments/commons :: nav}"></nav>
 <th:block th:replace="~{fragments/commons :: successMessage}"></th:block>
-<table class="table table-dark table-striped table-hover table-bordered caption-top" id="table">
+<table class="table table-responsive-sm table-dark table-striped table-hover table-bordered caption-top"
+       id="table">
     <caption>List of users</caption>
     <thead>
     <tr>

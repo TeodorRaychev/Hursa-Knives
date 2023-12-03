@@ -30,6 +30,8 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     implementation 'org.modelmapper:modelmapper:2.1.1'
     implementation 'org.modelmapper:modelmapper-module-record:1.0.0'
+    implementation 'com.cloudinary:cloudinary-http44:1.32.2'
+    testImplementation 'org.projectlombok:lombok:1.18.28'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

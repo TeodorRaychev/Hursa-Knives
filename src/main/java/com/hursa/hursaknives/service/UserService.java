@@ -46,6 +46,13 @@ public class UserService {
 
   public UserEntity registerUser(RegistrationBindingModel registrationBindingModel) {
     Assert.notNull(registrationBindingModel, "RegistrationBindingModel cannot be null");
+    this.userRepository
+        .findByEmail(registrationBindingModel.email())
+        .ifPresent(
+            user -> {
+              throw new IllegalArgumentException(
+                  "User with email " + user.getEmail() + " already exists");
+            });
     assert registrationBindingModel.password() != null
         && !registrationBindingModel.password().isEmpty();
     UserEntity userEntity =
@@ -57,6 +64,13 @@ public class UserService {
     }
     assert passwordEncoder.matches(registrationBindingModel.password(), userEntity.getPassword());
     assert userEntity.getPassword() != null;
+    this.userRepository
+        .findByEmail(registrationBindingModel.email())
+        .ifPresent(
+            user -> {
+              throw new IllegalArgumentException(
+                  "User with email " + user.getEmail() + " already exists");
+            });
     return this.userRepository.saveAndFlush(userEntity);
   }
 
