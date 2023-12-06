@@ -1,6 +1,7 @@
 package com.hursa.hursaknives.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public record ProductBindingModel(
@@ -8,5 +9,5 @@ public record ProductBindingModel(
         @Size(min = 2, message = "Name must be at least 2 characters")
         String name,
     @Size(min = 5, message = "Description must be at least 5 characters") String description,
-    Double price,
+    @Positive(message = "Price must be positive number") Double price,
     String material) {}
