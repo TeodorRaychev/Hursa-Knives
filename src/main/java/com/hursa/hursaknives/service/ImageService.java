@@ -12,7 +12,10 @@ public class ImageService {
   private final ImageRepository imageRepository;
   private final ProductRepository productRepository;
 
-  public ImageService(ImageRepository imageRepository, ProductRepository productRepository) {
+  public ImageService(
+      ImageRepository imageRepository,
+      ProductRepository productRepository
+      ) {
     this.imageRepository = imageRepository;
     this.productRepository = productRepository;
   }
@@ -36,5 +39,9 @@ public class ImageService {
     imageEntity.setProductEntity(productEntity);
     imageRepository.saveAndFlush(imageEntity);
     return imageEntity.getUrl();
+  }
+
+  public void delete(Long id) {
+    imageRepository.deleteById(id);
   }
 }

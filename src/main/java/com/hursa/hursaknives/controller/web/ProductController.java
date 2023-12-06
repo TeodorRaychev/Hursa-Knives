@@ -93,6 +93,71 @@ public class ProductController {
     }
 
     ProductEntity productEntity = productService.addProduct(productBindingModel);
+    addImage(images, productEntity.getId());
+    return "redirect:/products";
+  }
+
+  @DeleteMapping("/admin/delete/{id}")
+  @Transactional
+  public String delete(@PathVariable Long id, RedirectAttributes rAtt) {
+    productService.deleteProduct(id);
+    rAtt.addFlashAttribute("successMessage", "Product deleted successfully");
+    return "redirect:/products";
+  }
+
+  @GetMapping("/details/{id}")
+  public String details(@PathVariable Long id, Model model) {
+    if (!model.containsAttribute("product")) {
+      model.addAttribute("product", productService.getProductViewDTOById(id));
+    }
+    return "productDetails";
+  }
+
+  @GetMapping("/admin/edit/{id}")
+  public String edit(@PathVariable Long id, Model model) {
+    ProductViewDTO productViewDTOById = productService.getProductViewDTOById(id);
+    ProductBindingModel productBindingModel =
+        new ProductBindingModel(
+            productViewDTOById.name(),
+            productViewDTOById.description(),
+            productViewDTOById.price(),
+            productViewDTOById.material());
+    model.addAttribute("productViewDTO", productViewDTOById);
+    model.addAttribute("productBindingModel", productBindingModel);
+    return "productEdit";
+  }
+
+  @PostMapping("/admin/edit/{id}")
+  public String editPost(
+      @PathVariable Long id,
+      @RequestParam List<MultipartFile> images,
+      @Valid ProductBindingModel productBindingModel,
+      BindingResult bindingResult,
+      RedirectAttributes rAtt) {
+
+    if (bindingResult.hasErrors()) {
+      rAtt.addFlashAttribute("productBindingModel", productBindingModel);
+      rAtt.addFlashAttribute(
+          "org.springframework.validation.BindingResult.productBindingModel", bindingResult);
+      rAtt.addFlashAttribute("errorMessage", "Unable to edit product");
+      return "redirect:/products/admin/edit/" + id;
+    }
+
+    productService.updateProduct(id, productBindingModel);
+    addImage(images, id);
+    return "redirect:/products/admin/edit/" + id;
+  }
+
+  @DeleteMapping("/admin/edit/{id}/images/delete/{imageId}")
+  @Transactional
+  public String deleteImage(
+      @PathVariable Long id, @PathVariable Long imageId, RedirectAttributes rAtt) {
+    imageService.delete(imageId);
+    rAtt.addFlashAttribute("successMessage", "Product deleted successfully");
+    return "redirect:/products/admin/edit/" + id;
+  }
+
+  private void addImage(List<MultipartFile> images, Long productId) {
     if (!images.isEmpty()) {
       for (MultipartFile image : images) {
         try (InputStream input = image.getInputStream()) {
@@ -111,25 +176,8 @@ public class ProductController {
         } catch (Exception e) {
           e.printStackTrace();
         }
-        imageService.saveImage(new ImageBindingModel(url, productEntity.getId()));
+        imageService.saveImage(new ImageBindingModel(url, productId));
       }
     }
-    return "redirect:/products";
-  }
-
-  @DeleteMapping("/admin/delete/{id}")
-  @Transactional
-  public String delete(@PathVariable Long id, RedirectAttributes rAtt) {
-    productService.deleteProduct(id);
-    rAtt.addFlashAttribute("successMessage", "Product deleted successfully");
-    return "redirect:/products";
-  }
-
-  @GetMapping("/details/{id}")
-  public String edit(@PathVariable Long id, Model model) {
-    if (!model.containsAttribute("product")) {
-      model.addAttribute("product", productService.getProductById(id));
-    }
-    return "productDetails";
   }
 }

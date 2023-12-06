@@ -246,3 +246,7 @@ form.main-form {
     width: 100%;
     height: 100%;
 }
+
+.modal {
+    margin-top: 10rem;
+}
