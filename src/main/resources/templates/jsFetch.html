@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="~{fragments/commons :: head}"><title>JS Fetch</title></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<th:block th:replace="~{fragments/commons :: errorMessage}"></th:block>
+<div class="container-fluid bg-gray justify-content-center">
+    <div id="article"></div>
+</div>
+</body>
+<script>
+    const url = 'https://corsproxy.io/?' +
+        encodeURIComponent('https://en.wikipedia.org/w/api.php?action=parse&format=json&' +
+            'prop=text&page=Knife&callback=?');
+
+    async function getArticle() {
+        const response = await fetch(url);
+        const res = await response.text();
+
+        const replaced = res.replace('/**/(', '');
+        const jsonString = replaced.substring(0, replaced.length - 1);
+        const jsonResponseElement = JSON.parse(jsonString);
+        const resHtml = jsonResponseElement['parse']['text']['*'];
+        document.getElementById('article').innerHTML =
+            resHtml.split('href=\"').join('href="https://en.wikipedia.org')
+                .split('href="https://en.wikipedia.orghttps').join('href="https');
+    }
+
+    getArticle();
+</script>
+</html>
