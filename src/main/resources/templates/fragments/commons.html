@@ -77,6 +77,10 @@
                             </p>
                         </li>
                         <li class="nav-item">
+                            <a th:href="@{/wiki}"
+                               class="nav-link btn btn-outline-secondary m-2 px-3">Wiki</a>
+                        </li>
+                        <li class="nav-item">
                             <a th:href="@{/products}"
                                class="nav-link btn btn-outline-secondary m-2">Products</a>
                         </li>
@@ -115,8 +119,9 @@
                                     <li class="li-hov"><a class="dropdown-item"
                                                           th:href="@{/products/admin/add}">Add
                                         Product</a></li>
-                                    <li class="li-hov"><a class="dropdown-item" href="#">Edit
-                                        Product</a></li>
+                                    <li class="li-hov"><a class="dropdown-item"
+                                                          th:href="@{/products}">Edit
+                                        Products</a></li>
                                 </ul>
                             </li>
                             <!--                            </ul>-->
