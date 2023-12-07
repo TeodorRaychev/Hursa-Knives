@@ -6,16 +6,14 @@ import com.hursa.hursaknives.model.entity.ProductEntity;
 import com.hursa.hursaknives.repo.ImageRepository;
 import com.hursa.hursaknives.repo.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ImageService {
   private final ImageRepository imageRepository;
   private final ProductRepository productRepository;
 
-  public ImageService(
-      ImageRepository imageRepository,
-      ProductRepository productRepository
-      ) {
+  public ImageService(ImageRepository imageRepository, ProductRepository productRepository) {
     this.imageRepository = imageRepository;
     this.productRepository = productRepository;
   }
@@ -41,6 +39,7 @@ public class ImageService {
     return imageEntity.getUrl();
   }
 
+  @Transactional
   public void delete(Long id) {
     imageRepository.deleteById(id);
   }
