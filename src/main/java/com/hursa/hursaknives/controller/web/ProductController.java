@@ -15,7 +15,6 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,12 +64,12 @@ public class ProductController {
   }
 
   @GetMapping
-  public String index() {
+  public String products() {
     return "products";
   }
 
   @GetMapping("/admin/add")
-  public String add(Model model) {
+  public String addGet(Model model) {
     if (!model.containsAttribute("productBindingModel")) {
       model.addAttribute("productBindingModel", new ProductBindingModel(null, null, null, null));
     }
@@ -78,7 +77,7 @@ public class ProductController {
   }
 
   @PostMapping("/admin/add")
-  public String add(
+  public String addPost(
       @RequestParam List<MultipartFile> images,
       @Valid ProductBindingModel productBindingModel,
       BindingResult bindingResult,
@@ -98,7 +97,6 @@ public class ProductController {
   }
 
   @DeleteMapping("/admin/delete/{id}")
-  @Transactional
   public String delete(@PathVariable Long id, RedirectAttributes rAtt) {
     productService.deleteProduct(id);
     rAtt.addFlashAttribute("successMessage", "Product deleted successfully");
@@ -149,7 +147,6 @@ public class ProductController {
   }
 
   @DeleteMapping("/admin/edit/{id}/images/delete/{imageId}")
-  @Transactional
   public String deleteImage(
       @PathVariable Long id, @PathVariable Long imageId, RedirectAttributes rAtt) {
     imageService.delete(imageId);
