@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head th:replace="~{fragments/commons :: head}"><title>Contacts</title></head>
+<body>
+<nav th:replace="~{fragments/commons :: nav}"></nav>
+<th:block th:replace="~{fragments/commons :: errorMessage}"></th:block>
+<div class="container mt-3 mb-0" th:object="${contacts}">
+    <div class="row d-flex justify-content-center mb-3" th:each="contact : ${contacts}">
+        <div class="col-md-11">
+            <div class="card bg-gray">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="images p-3">
+                            <div class="text-center p-4">
+                                <img id="main-image" alt="Contact image"
+                                     th:src="@{${contact.getImageUrl() != null?
+                                      contact.getImageUrl():'/images/no_image_icon.png'}}"
+                                     width="300"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="Contact p-4">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a th:href="@{/}"
+                                   class="text-secondary text-decoration-none">
+                                    <div class="d-flex align-items-center"><i
+                                            class="fa fa-long-arrow-left"></i> <span
+                                            class="ml-1">Back</span></div>
+                                </a>
+                                <i class="fa fa-shopping-cart text-muted"></i>
+                            </div>
+                            <div class="mt-4 mb-3">
+                                <h5 class="text-uppercase" th:text="${contact.firstName
+                                + ' ' + contact.lastName}">Contact
+                                    Name</h5>
+                                <div class="price d-flex flex-row align-items-center"><span
+                                        class="act-price">Email: <th:block
+                                        th:text="${contact.getEmail()}">contacts@hursa.com
+                                </th:block></span>
+                                </div>
+                                <div>Phone:
+                                    <th:block
+                                            th:text="${contact.getPhone() != null ||
+                                            contact.getPhone()== ''? contact.getPhone() : 'N/A'}">
+                                    </th:block>
+                                </div>
+                            </div>
+                            <p class="about">Additional Info:
+                                <th:block th:text="${contact.getAdditionalInfo()}"></th:block>
+                            </p>
+                            <th:block sec:authorize="hasRole('ADMIN')">
+                                <a th:href="@{/contacts/admin/edit/{id}(id=${contact.getId()})}"
+                                   class="btn btn-outline-secondary">Edit</a>
+                                <button
+                                        type="button" class="btn btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        th:attr="data-bs-target=${'#deleteContactWithID' +
+                                        contact.getId()}">
+                                    Delete
+                                </button>
+                                <div class="modal fade"
+                                     th:attr="id=${'deleteContactWithID' + contact.getId()}"
+                                     tabindex="-1"
+                                     th:aria-labelledby="${'#deleteContactLabel' + contact.getId()}"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title"
+                                                    th:id="${'deleteContactLabel' +
+                                                    contact.getId()}">
+                                                    DELETE Contact</h5>
+                                                <button type="button" class="btn-close"
+                                                        data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Are you sure you want to delete Contact with name
+                                                    <th:block
+                                                            th:text="${contact.getFirstName() + ' '
+                                                            + contact.getLastName()}"></th:block>
+                                                    ?
+                                                </p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button"
+                                                        class="btn btn-outline-secondary"
+                                                        data-bs-dismiss="modal">Cancel
+                                                </button>
+                                                <form th:action="@{/contacts/admin/delete/{id}
+                                                (id=${contact.getId()})}"
+                                                      th:method="delete">
+                                                    <button type="submit"
+                                                            class="btn btn-outline-danger">Delete
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th:block>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

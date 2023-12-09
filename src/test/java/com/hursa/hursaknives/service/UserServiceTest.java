@@ -14,12 +14,15 @@ import static org.mockito.Mockito.when;
 import com.hursa.hursaknives.model.dto.ProfileBindingModel;
 import com.hursa.hursaknives.model.dto.RegistrationBindingModel;
 import com.hursa.hursaknives.model.entity.UserEntity;
+import com.hursa.hursaknives.model.entity.UserRoleEntity;
 import com.hursa.hursaknives.model.enums.UserRoleEnum;
 import com.hursa.hursaknives.repo.UserRepository;
+import com.hursa.hursaknives.repo.UserRoleRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,12 +36,18 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class UserServiceTest {
   private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
   private final ModelMapper modelMapper = new ModelMapper().registerModule(new RecordModule());
+  UserRoleEntity adminRole;
+  UserRoleEntity userRole;
   private UserService serviceToTest;
   @Mock private UserRepository userRepository;
+  @Mock private UserRoleRepository userRoleRepository;
 
   @BeforeEach
   void setup() {
-    serviceToTest = new UserService(userRepository, bCryptPasswordEncoder, modelMapper);
+    serviceToTest =
+        new UserService(userRepository, userRoleRepository, bCryptPasswordEncoder, modelMapper);
+    adminRole = (UserRoleEntity) new UserRoleEntity().setRole(UserRoleEnum.ADMIN).setId(1L);
+    userRole = (UserRoleEntity) new UserRoleEntity().setRole(UserRoleEnum.USER).setId(2L);
   }
 
   @Test
@@ -48,6 +57,10 @@ public class UserServiceTest {
     String email = "test@test.com";
     String password = "test";
     String encoded = bCryptPasswordEncoder.encode(password);
+    when(userRoleRepository.count()).thenReturn(0L);
+    when(userRoleRepository.saveAndFlush(any())).thenReturn(adminRole);
+    when(userRoleRepository.findByRole(UserRoleEnum.ADMIN)).thenReturn(Optional.of(adminRole));
+    when(userRoleRepository.findByRole(UserRoleEnum.USER)).thenReturn(Optional.of(userRole));
     when(userRepository.count()).thenReturn(0L);
     when(userRepository.saveAndFlush(any(UserEntity.class)))
         .thenReturn(
@@ -56,7 +69,7 @@ public class UserServiceTest {
                 .setLastName(lastName)
                 .setEmail(email)
                 .setPassword(encoded)
-                .setRoles(Set.of(UserRoleEnum.ADMIN, UserRoleEnum.USER)));
+                .setRoles(Set.of(adminRole, userRole)));
     assertDoesNotThrow(
         () -> serviceToTest.initAdmin(firstName, lastName, email, password),
         "initAdmin should not throw an exception");
@@ -66,7 +79,7 @@ public class UserServiceTest {
     assertEquals(lastName, userEntity.getLastName(), "Should return correct last name");
     assertEquals(
         Set.of(UserRoleEnum.ADMIN, UserRoleEnum.USER),
-        userEntity.getRoles(),
+        userEntity.getRoles().stream().map(UserRoleEntity::getRole).collect(Collectors.toSet()),
         "Should return correct roles");
     assertEquals(encoded, userEntity.getPassword(), "Should return correct password");
   }
@@ -74,6 +87,8 @@ public class UserServiceTest {
   @Test
   void initAdminAlreadyExists() {
     when(userRepository.count()).thenReturn(1L);
+    when(userRoleRepository.findByRole(UserRoleEnum.USER)).thenReturn(Optional.of(userRole));
+    when(userRoleRepository.findByRole(UserRoleEnum.ADMIN)).thenReturn(Optional.of(adminRole));
     assertNull(
         serviceToTest.initAdmin("test", "test", "test@test.com", "test"), "Should return null");
   }
@@ -86,6 +101,7 @@ public class UserServiceTest {
     RegistrationBindingModel registrationBindingModel =
         new RegistrationBindingModel(email, password, password, name, name, null);
     String encoded = bCryptPasswordEncoder.encode(password);
+    when(userRoleRepository.findByRole(UserRoleEnum.USER)).thenReturn(Optional.of(userRole));
     when(userRepository.saveAndFlush(any(UserEntity.class)))
         .thenReturn(
             new UserEntity()
@@ -93,7 +109,7 @@ public class UserServiceTest {
                 .setPassword(encoded)
                 .setFirstName(name)
                 .setLastName(name)
-                .setRoles(Set.of(UserRoleEnum.USER)));
+                .setRoles(Set.of(userRole)));
     assertDoesNotThrow(
         () -> serviceToTest.registerUser(registrationBindingModel),
         "registerUser should not throw an exception");
@@ -101,7 +117,10 @@ public class UserServiceTest {
     assertEquals(email, userEntity.getEmail(), "Should return correct email");
     assertEquals(name, userEntity.getFirstName(), "Should return correct first name");
     assertEquals(name, userEntity.getLastName(), "Should return correct last name");
-    assertEquals(Set.of(UserRoleEnum.USER), userEntity.getRoles(), "Should return correct roles");
+    assertEquals(
+        Set.of(UserRoleEnum.USER),
+        userEntity.getRoles().stream().map(UserRoleEntity::getRole).collect(Collectors.toSet()),
+        "Should return correct roles");
     assertEquals(encoded, userEntity.getPassword(), "Should return correct password");
   }
 
@@ -116,7 +135,7 @@ public class UserServiceTest {
                     .setEmail(existingEmail)
                     .setFirstName("test")
                     .setLastName("test")
-                    .setRoles(Set.of(UserRoleEnum.ADMIN))));
+                    .setRoles(Set.of(adminRole))));
     assertDoesNotThrow(
         () -> serviceToTest.getUserProfile(existingEmail),
         "getUserProfile should not throw an exception when user exists");
@@ -255,6 +274,8 @@ public class UserServiceTest {
   void updateUserProfileRoles() {
     String name = "test";
     String email = "test@test.com";
+    when(userRoleRepository.findByRole(UserRoleEnum.ADMIN)).thenReturn(Optional.of(adminRole));
+    when(userRoleRepository.findByRole(UserRoleEnum.USER)).thenReturn(Optional.of(userRole));
     when(userRepository.findById(1L))
         .thenReturn(
             Optional.of(
@@ -263,7 +284,7 @@ public class UserServiceTest {
                     .setFirstName(name)
                     .setLastName(name)
                     .setEmail(email)
-                    .setRoles(Set.of(UserRoleEnum.USER))));
+                    .setRoles(Set.of(userRole))));
     ProfileBindingModel profileBindingModel =
         new ProfileBindingModel()
             .setId(1L)
@@ -319,7 +340,7 @@ public class UserServiceTest {
                     .setEmail(email)
                     .setLastName(name)
                     .setFirstName(name)
-                    .setRoles(Set.of(UserRoleEnum.ADMIN, UserRoleEnum.USER))));
+                    .setRoles(Set.of(adminRole, userRole))));
     assertDoesNotThrow(() -> serviceToTest.findById(1L), "findById should not throw an exception");
     assertEquals(email, serviceToTest.findById(1L).getEmail(), "Should return correct email");
     assertEquals(
