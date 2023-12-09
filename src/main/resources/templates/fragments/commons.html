@@ -58,8 +58,16 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <th:block sec:authorize="!isAuthenticated()">
                         <li class="nav-item">
+                            <a th:href="@{/wiki}"
+                               class="nav-link btn btn-outline-secondary m-2 px-3">Wiki</a>
+                        </li>
+                        <li class="nav-item">
                             <a th:href="@{/products}"
                                class="nav-link btn btn-outline-secondary m-2">Products</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/contacts}"
+                               class="nav-link btn btn-outline-secondary m-2">Contacts</a>
                         </li>
                         <li class="nav-item">
                             <a th:href="@{/users/login}"
@@ -84,9 +92,11 @@
                             <a th:href="@{/products}"
                                class="nav-link btn btn-outline-secondary m-2">Products</a>
                         </li>
+                        <li class="nav-item">
+                            <a th:href="@{/contacts}"
+                               class="nav-link btn btn-outline-secondary m-2">Contacts</a>
+                        </li>
                         <th:block sec:authorize="hasAuthority('ROLE_ADMIN')">
-                            <!--                            <li class="nav-item dropdown"></li>-->
-                            <!--                            <ul class="nav nav-pills">-->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle btn btn-outline-secondary m-2 py-2"
                                    data-bs-toggle="dropdown" href="#" role="button"
@@ -105,11 +115,13 @@
                                         <hr class="dropdown-divider"
                                             style="border-color: #6c757d">
                                     </li>
-                                    <li><h6 class="dropdown-header">Info Actions</h6></li>
-                                    <li class="li-hov"><a class="dropdown-item" href="#">Add
+                                    <li><h6 class="dropdown-header">Contact Actions</h6></li>
+                                    <li class="li-hov"><a class="dropdown-item"
+                                                          th:href="@{/contacts/admin/add}">Add
                                         Contact</a></li>
-                                    <li class="li-hov"><a class="dropdown-item" href="#">Edit
-                                        Info</a>
+                                    <li class="li-hov"><a class="dropdown-item"
+                                                          th:href="@{/contacts}">Edit
+                                        Contacts</a>
                                     </li>
                                     <li>
                                         <hr class="dropdown-divider"

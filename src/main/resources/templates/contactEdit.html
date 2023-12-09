@@ -1,41 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="~{fragments/commons :: head}"><title>Edit Product</title></head>
+<head th:replace="~{fragments/commons :: head}"><title>Edit Contact</title></head>
 <body>
 <nav th:replace="~{fragments/commons :: nav}"></nav>
 <th:block th:replace="~{fragments/commons :: errorMessage}"></th:block>
 <th:block th:replace="~{fragments/commons :: successMessage}"></th:block>
 
-<div class="mt-5 mx-0" th:object="${productViewDTO}">
+<div class="mt-5 mx-0" th:object="${contactDTO}">
     <div class="row d-flex justify-content-center mx-0 px-3">
         <div class="col-md-12 mx-0 px-0">
-            <div th:object="${images}">
+            <div>
                 <div class="row">
                     <div class="col-md-6 mx-0 p-0">
                         <div class="images row mx-0">
-                            <th:block th:if="${!productViewDTO.images().isEmpty()}">
-                                <div class="thumbnail text-center mb-5  d-flex flex-column align-items-center col-sm-3 col-xs-8 mx-auto"
-                                     th:each="image : ${productViewDTO.images()}">
-                                    <img th:src="@{${image.url()}}" alt="product image"
-                                         width="200"
+                            <th:block th:if="${contactDTO.getImageUrl() != null}">
+                                <div class="thumbnail text-center mb-5  d-flex flex-column align-items-center col-6 mx-auto">
+                                    <img th:src="@{${contactDTO.getImageUrl()}}" alt="Contact image"
+                                         width="300"
                                          class="mx-2 img-thumbnail">
                                     <button
                                             type="button" class="btn btn-outline-danger mt-2"
                                             style="width: 80px"
                                             data-bs-toggle="modal"
-                                            th:attr="data-bs-target=${'#deleteImageWithID' + image.id}">
+                                            th:attr="data-bs-target=${'#deleteImageWithID' + contactDTO.getId()}">
                                         Delete
                                     </button>
                                     <div class="modal fade"
-                                         th:attr="id=${'deleteImageWithID' + image.id}"
+                                         th:attr="id=${'deleteImageWithID' + contactDTO.getId()}"
                                          tabindex="-1"
-                                         th:aria-labelledby="${'#deleteImageLabel' + image.id}"
+                                         th:aria-labelledby="${'#deleteImageLabel' + contactDTO.getId()}"
                                          aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title"
-                                                        th:id="${'deleteImageLabel' + image.id}">
+                                                        th:id="${'deleteImageLabel' + contactDTO.getId()}">
                                                         DELETE IMAGE</h5>
                                                     <button type="button" class="btn-close"
                                                             data-bs-dismiss="modal"
@@ -50,7 +49,7 @@
                                                             class="btn btn-outline-secondary"
                                                             data-bs-dismiss="modal">Cancel
                                                     </button>
-                                                    <form th:action="@{/products/admin/edit/{id}/images/delete/{imageId}(id=${productViewDTO.id},imageId=${image.id()})}"
+                                                    <form th:action="@{/contacts/admin/edit/{id}(id=${contactDTO.getId()})}"
                                                           th:method="delete">
                                                         <button type="submit"
                                                                 class="btn btn-outline-danger">
@@ -63,9 +62,9 @@
                                     </div>
                                 </div>
                             </th:block>
-                            <th:block th:unless="${!productViewDTO.images().isEmpty()}">
+                            <th:block th:unless="${contactDTO.getImageUrl() != null}">
                                 <div class="thumbnail text-center mb-5  d-flex flex-column align-items-center col-3 mx-auto">
-                                    <img alt="product image"
+                                    <img alt="Contact image"
                                          src="/images/no_image_icon.png"
                                          width="300"/>
                                 </div>
@@ -76,82 +75,100 @@
                     <div class="col-lg-4 col-md-5 col-xs-10 mx-0 px-0 mx-auto">
 
                         <form class="main-form mx-auto bg-blur "
-                              th:action="@{/products/admin/edit/{id}(id=${productViewDTO.id})}"
+                              th:action="@{/contacts/admin/edit/{id}(id=${contactDTO.getId()})}"
                               th:method="post" enctype="multipart/form-data"
-                              th:object="${productViewDTO}">
+                              th:object="${contactDTO}">
                             <div class="form-group my-1 mx-4">
                                 <div class="label-holder text-white d-flex justify-content-center">
-                                    <label for="name" class="form-label h4 mb-2">Product
+                                    <label for="firstName" class="form-label h4 mb-2">First
                                         Name</label>
                                 </div>
-                                <input autocomplete="name" type="text" class="form-control"
-                                       id="name" name="name" data-bs-toggle="tooltip"
+                                <input autocomplete="given-name" type="text" class="form-control"
+                                       id="firstName" name="firstName" data-bs-toggle="tooltip"
                                        data-bs-placement="bottom"
-                                       title="Please enter a valid product name e.g Cool Product Name"
-                                       th:value="${productViewDTO.name()}"
-                                       th:errorClass="'is-invalid text-danger wrn'"/>
-                                <small class="invalid-feedback text-danger" th:errors="*{name}">Product
-                                    name
-                                    error
-                                    message</small>
-                            </div>
-                            <div class="form-group my-1 mx-4">
-                                <div class="label-holder text-white d-flex justify-content-center">
-                                    <label for="description" class="form-label h4 mb-2">Product
-                                        Description</label>
-                                </div>
-                                <input autocomplete="description" type="text" class="form-control"
-                                       id="description" name="description" data-bs-toggle="tooltip"
-                                       data-bs-placement="bottom"
-                                       title="Please enter a valid description e.g. This product is awesome"
-                                       th:value="${productViewDTO.description()}"
+                                       title="Please enter a valid first name e.g John"
+                                       th:value="${contactDTO.getFirstName()}"
                                        th:errorClass="'is-invalid text-danger wrn'"/>
                                 <small class="invalid-feedback text-danger"
-                                       th:errors="*{description}">Description
-                                    error
+                                       th:errors="*{firstName}">First name error
                                     message</small>
                             </div>
+
                             <div class="form-group my-1 mx-4">
                                 <div class="label-holder text-white d-flex justify-content-center">
-                                    <label for="price" class="form-label h4 mb-2">Price</label>
+                                    <label for="lastName" class="form-label h4 mb-2">Last
+                                        Name</label>
                                 </div>
-                                <input autocomplete="price" type="text" class="form-control"
-                                       id="price" name="price" data-bs-toggle="tooltip"
+                                <input autocomplete="given-name" type="text" class="form-control"
+                                       id="lastName" name="lastName" data-bs-toggle="tooltip"
                                        data-bs-placement="bottom"
-                                       title="Please enter a valid price e.g. 50.00"
-                                       th:value="${productViewDTO.price()}"
+                                       title="Please enter a valid last name e.g Doe"
+                                       th:value="${contactDTO.getLastName()}"
                                        th:errorClass="'is-invalid text-danger wrn'"/>
-                                <small class="invalid-feedback text-danger" th:errors="*{price}">Price
-                                    error
+                                <small class="invalid-feedback text-danger" th:errors="*{lastName}">Last
+                                    name error
                                     message</small>
                             </div>
+
                             <div class="form-group my-1 mx-4">
                                 <div class="label-holder text-white d-flex justify-content-center">
-                                    <label for="material" class="form-label h4 mb-2">Product
-                                        Material</label>
+                                    <label for="additionalInfo" class="form-label h4 mb-2">Additional
+                                        Info</label>
                                 </div>
-                                <input autocomplete="material" type="text" class="form-control"
-                                       id="material" name="material" data-bs-toggle="tooltip"
+                                <input autocomplete="additionalInfo" type="text"
+                                       class="form-control"
+                                       id="additionalInfo" name="additionalInfo"
+                                       data-bs-toggle="tooltip"
                                        data-bs-placement="bottom"
-                                       title="Please enter a valid material e.g. Steel"
-                                       th:value="${productViewDTO.material()}"
+                                       title="Please enter a valid additional info e.g. Contact me if you have any questions"
+                                       th:value="${contactDTO.getAdditionalInfo()}"
                                        th:errorClass="'is-invalid text-danger wrn'"/>
-                                <small class="invalid-feedback text-danger" th:errors="*{material}">Quantity
+                                <small class="invalid-feedback text-danger"
+                                       th:errors="*{additionalInfo}">Description error
+                                    message</small>
+                            </div>
+
+                            <div class="form-group my-1 mx-4">
+                                <div class="label-holder text-white d-flex justify-content-center">
+                                    <label for="email" class="form-label h4 mb-2">Contact
+                                        Email</label>
+                                </div>
+                                <input autocomplete="email" type="email" class="form-control"
+                                       id="email" name="email" data-bs-toggle="tooltip"
+                                       data-bs-placement="bottom"
+                                       title="Please enter a valid email e.g. john@example.com"
+                                       th:value="${contactDTO.getEmail()}"
+                                       th:errorClass="'is-invalid text-danger wrn'"/>
+                                <small class="invalid-feedback text-danger" th:errors="*{email}">Email
                                     error
                                     message</small>
                             </div>
 
                             <div class="form-group my-1 mx-4">
                                 <div class="label-holder text-white d-flex justify-content-center">
-                                    <label for="images" class="form-label h4 mb-2">Add
-                                        Images</label>
+                                    <label for="phone" class="form-label h4 mb-2">Contact
+                                        phone</label>
                                 </div>
-                                <input class="form-control" type="file" id="images" name="images"
-                                       multiple>
+                                <input autocomplete="phone" type="number" class="form-control"
+                                       id="phone" name="phone" data-bs-toggle="tooltip"
+                                       data-bs-placement="bottom"
+                                       title="Please enter a valid phone e.g. john@example.com"
+                                       th:value="${contactDTO.getPhone()}"
+                                       th:errorClass="'is-invalid text-danger wrn'"/>
+                                <small class="invalid-feedback text-danger" th:errors="*{phone}">Phone
+                                    error
+                                    message</small>
+                            </div>
+
+                            <div class="form-group my-1 mx-4">
+                                <div class="label-holder text-white d-flex justify-content-center">
+                                    <label for="image" class="form-label h4 mb-2">Add Image</label>
+                                </div>
+                                <input class="form-control" type="file" id="image" name="image">
                             </div>
 
                             <div class="button-holder d-flex justify-content-center">
-                                <button type="submit" class="btn btn-warning  my-2">Edit Product
+                                <button type="submit" class="btn btn-warning  my-2">Edit Contact
                                 </button>
                             </div>
                         </form>
@@ -159,26 +176,28 @@
                                 type="button"
                                 class="btn btn-danger px-3 py-2  my-2 col-12"
                                 data-bs-toggle="modal"
-                                th:attr="data-bs-target=${'#deleteProductWithID' + productViewDTO.id}">
+                                th:attr="data-bs-target=${'#deleteContactWithID'
+                                + contactDTO.getId()}">
                             Delete
                         </button>
                         <div class="modal fade"
-                             th:attr="id=${'deleteProductWithID' + productViewDTO.id}" tabindex="-1"
-                             th:aria-labelledby="${'#deleteProductLabel' + productViewDTO.id}"
+                             th:attr="id=${'deleteContactWithID' + contactDTO.id}" tabindex="-1"
+                             th:aria-labelledby="${'#deleteContactLabel' + contactDTO.getId()}"
                              aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title"
-                                            th:id="${'deleteProductLabel' + productViewDTO.id}">
-                                            DELETE PRODUCT</h5>
+                                            th:id="${'deleteContactLabel' + contactDTO.getId()}">
+                                            DELETE Contact</h5>
                                         <button type="button" class="btn-close"
                                                 data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Are you sure you want to delete product with name
-                                            <th:block th:text="${productViewDTO.name}"></th:block>
+                                        <p>Are you sure you want to delete Contact with name
+                                            <th:block th:text="${contactDTO.getFirstName() + ' '
+                                            + contactDTO.getLastName()}"></th:block>
                                             ?
                                         </p>
                                     </div>
@@ -186,7 +205,7 @@
                                         <button type="button" class="btn btn-outline-secondary"
                                                 data-bs-dismiss="modal">Cancel
                                         </button>
-                                        <form th:action="@{/products/admin/delete/{id}(id=${productViewDTO.id})}"
+                                        <form th:action="@{/contacts/admin/delete/{id}(id=${contactDTO.id})}"
                                               th:method="delete">
                                             <button type="submit"
                                                     class="btn btn-outline-danger">Delete

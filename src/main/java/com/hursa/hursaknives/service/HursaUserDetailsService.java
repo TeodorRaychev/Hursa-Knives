@@ -29,7 +29,7 @@ public class HursaUserDetailsService implements UserDetailsService {
         .password(userEntity.getPassword())
         .authorities(
             userEntity.getRoles().stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.name()))
+                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRole().name()))
                 .toList())
         .build();
   }

@@ -1,11 +1,14 @@
 package com.hursa.hursaknives.model.entity;
 
-import com.hursa.hursaknives.model.enums.UserRoleEnum;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +34,12 @@ public class UserEntity extends BaseEntity {
   @Column(name = "password", nullable = false)
   private String password;
 
-  @Column(name = "roles", nullable = false)
-  @Enumerated(value = jakarta.persistence.EnumType.STRING)
-  private Set<UserRoleEnum> roles = new HashSet<>();
+  @ManyToMany(
+      cascade = {CascadeType.MERGE},
+      fetch = FetchType.EAGER)
+  @JoinTable(
+      name = "users_roles",
+      joinColumns = @JoinColumn(name = "user_entity_id"),
+      inverseJoinColumns = @JoinColumn(name = "roles_id"))
+  private Set<UserRoleEntity> roles = new LinkedHashSet<>();
 }

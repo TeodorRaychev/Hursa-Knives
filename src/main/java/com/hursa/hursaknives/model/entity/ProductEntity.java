@@ -21,7 +21,7 @@ public class ProductEntity extends BaseEntity {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "description")
+  @Column(name = "description", nullable = false)
   private String description;
 
   @OneToMany(mappedBy = "productEntity", orphanRemoval = true)

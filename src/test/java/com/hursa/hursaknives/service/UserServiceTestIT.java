@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.hursa.hursaknives.model.dto.RegistrationBindingModel;
 import com.hursa.hursaknives.model.entity.UserEntity;
+import com.hursa.hursaknives.model.entity.UserRoleEntity;
 import com.hursa.hursaknives.model.enums.UserRoleEnum;
 import java.util.NoSuchElementException;
 import org.junit.jupiter.api.Test;
@@ -44,7 +45,9 @@ class UserServiceTestIT {
     assertEquals(name, userEntity.getFirstName(), "Should return correct first name");
     assertEquals(name, userEntity.getLastName(), "Should return correct last name");
     assertTrue(
-        userEntity.getRoles().stream().anyMatch(role -> role.equals(UserRoleEnum.USER)),
+        userEntity.getRoles().stream()
+            .map(UserRoleEntity::getRole)
+            .anyMatch(role -> role.equals(UserRoleEnum.USER)),
         "Should return correct roles");
     assertTrue(
         passwordEncoder.matches(password, userEntity.getPassword()),

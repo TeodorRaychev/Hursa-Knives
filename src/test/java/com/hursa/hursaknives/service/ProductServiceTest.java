@@ -32,10 +32,11 @@ class ProductServiceTest {
   @BeforeEach
   void setup() {
     serviceToTest = new ProductService(productRepository, modelMapper);
-    List<ImageEntity> imageEntityList = List.of(
-        (ImageEntity) new ImageEntity().setUrl("testUrl").setId(1L),
-        (ImageEntity) new ImageEntity().setUrl("testUrl2").setId(2L),
-        (ImageEntity) new ImageEntity().setUrl("testUrl3").setId(3L));
+    List<ImageEntity> imageEntityList =
+        List.of(
+            (ImageEntity) new ImageEntity().setUrl("testUrl").setId(1L),
+            (ImageEntity) new ImageEntity().setUrl("testUrl2").setId(2L),
+            (ImageEntity) new ImageEntity().setUrl("testUrl3").setId(3L));
     products =
         List.of(
             (ProductEntity)
