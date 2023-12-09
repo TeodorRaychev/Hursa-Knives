@@ -3,6 +3,7 @@ package com.hursa.hursaknives.service;
 import com.hursa.hursaknives.model.dto.ImageDTO;
 import com.hursa.hursaknives.model.dto.ProductBindingModel;
 import com.hursa.hursaknives.model.dto.ProductViewDTO;
+import com.hursa.hursaknives.model.entity.ImageEntity;
 import com.hursa.hursaknives.model.entity.ProductEntity;
 import com.hursa.hursaknives.repo.ProductRepository;
 import java.math.BigDecimal;
@@ -17,10 +18,13 @@ public class ProductService {
 
   private final ProductRepository productRepository;
   private final ModelMapper modelMapper;
+  private final ImageService imageService;
 
-  public ProductService(ProductRepository productRepository, ModelMapper modelMapper) {
+  public ProductService(
+      ProductRepository productRepository, ModelMapper modelMapper, ImageService imageService) {
     this.productRepository = productRepository;
     this.modelMapper = modelMapper;
+    this.imageService = imageService;
   }
 
   public ProductEntity addProduct(ProductBindingModel productBindingModel) {
@@ -49,6 +53,13 @@ public class ProductService {
 
   @Transactional
   public void deleteProduct(Long id) {
+    ProductEntity product =
+        productRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+    for (ImageEntity image : product.getImages()) {
+      imageService.delete(image.getId());
+    }
     productRepository.deleteById(id);
   }
 

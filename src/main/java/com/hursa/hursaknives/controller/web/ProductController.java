@@ -12,6 +12,8 @@ import com.hursa.hursaknives.service.UserService;
 import jakarta.validation.Valid;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -34,6 +36,7 @@ public class ProductController {
   private final ProductService productService;
   private final ImageService imageService;
   private final FileUploadService fileUploadService;
+  private final Logger logger = Logger.getLogger(ProductController.class.getName());
 
   public ProductController(
       UserService userService,
@@ -150,7 +153,7 @@ public class ProductController {
   public String deleteImage(
       @PathVariable Long id, @PathVariable Long imageId, RedirectAttributes rAtt) {
     imageService.delete(imageId);
-    rAtt.addFlashAttribute("successMessage", "Product deleted successfully");
+    rAtt.addFlashAttribute("successMessage", "Image deleted successfully");
     return "redirect:/products/admin/edit/" + id;
   }
 
@@ -168,12 +171,15 @@ public class ProductController {
           continue;
         }
         String url = null;
+        String publicId = null;
         try {
-          url = fileUploadService.uploadFile(image);
+          Map<String, String> res = fileUploadService.uploadFile(image);
+          url = res.get("url");
+          publicId = res.get("public_id");
         } catch (Exception e) {
-          e.printStackTrace();
+          logger.severe(e.getMessage());
         }
-        imageService.saveImage(new ImageBindingModel(url, productId));
+        imageService.saveImage(new ImageBindingModel(url, productId, publicId));
       }
     }
   }

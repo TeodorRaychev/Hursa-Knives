@@ -22,6 +22,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ContactsControllerTestIT {
@@ -76,7 +78,7 @@ class ContactsControllerTestIT {
 
   @Test
   void testAddContact() throws Exception {
-    when(fileUploadService.uploadFile(any())).thenReturn("test");
+    when(fileUploadService.uploadFile(any())).thenReturn(Map.of("uuid", "uuid", "url", "test"));
     MockMultipartFile file = new MockMultipartFile("image", "image.jpg", "file", "test".getBytes());
     mockMvc
         .perform(
@@ -111,7 +113,7 @@ class ContactsControllerTestIT {
 
   @Test
   void testEditContact() throws Exception {
-    when(fileUploadService.uploadFile(any())).thenReturn("test");
+    when(fileUploadService.uploadFile(any())).thenReturn(Map.of("uuid", "uuid", "url", "test"));
     MockMultipartFile file = new MockMultipartFile("image", "image.jpg", "file", "test".getBytes());
     mockMvc
         .perform(
@@ -130,7 +132,7 @@ class ContactsControllerTestIT {
 
   @Test
   void testEditContactWithInvalidData() throws Exception {
-    when(fileUploadService.uploadFile(any())).thenReturn("test");
+    when(fileUploadService.uploadFile(any())).thenReturn(Map.of("uuid", "uuid", "url", "test"));
     MockMultipartFile file = new MockMultipartFile("image", "image.jpg", "file", "test".getBytes());
     mockMvc
         .perform(

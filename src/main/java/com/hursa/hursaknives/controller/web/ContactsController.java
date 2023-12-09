@@ -89,7 +89,7 @@ public class ContactsController {
   }
 
   @DeleteMapping("/admin/edit/{id}")
-  public String removeContactImage(@PathVariable Long id, Model model) {
+  public String removeContactImage(@PathVariable Long id) {
     contactService.removeContactImage(id);
     return "redirect:/contacts/admin/edit/" + id;
   }
@@ -133,7 +133,7 @@ public class ContactsController {
         return null;
       }
       try {
-        return fileUploadService.uploadFile(image);
+        return fileUploadService.uploadFile(image).get("url");
       } catch (Exception e) {
         logger.warning(e.getMessage());
       }

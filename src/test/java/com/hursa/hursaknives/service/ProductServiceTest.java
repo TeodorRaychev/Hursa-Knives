@@ -26,12 +26,13 @@ import org.modelmapper.record.RecordModule;
 class ProductServiceTest {
   private final ModelMapper modelMapper = new ModelMapper().registerModule(new RecordModule());
   @Mock private ProductRepository productRepository;
+  @Mock private ImageService imageService;
   private ProductService serviceToTest;
   private List<ProductEntity> products;
 
   @BeforeEach
   void setup() {
-    serviceToTest = new ProductService(productRepository, modelMapper);
+    serviceToTest = new ProductService(productRepository, modelMapper, imageService);
     List<ImageEntity> imageEntityList =
         List.of(
             (ImageEntity) new ImageEntity().setUrl("testUrl").setId(1L),

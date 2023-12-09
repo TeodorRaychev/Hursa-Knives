@@ -22,6 +22,8 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Map;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 class ProductControllerTestIT {
@@ -76,7 +78,7 @@ class ProductControllerTestIT {
 
   @Test
   void testAddPost() throws Exception {
-    when(fileUploadService.uploadFile(any())).thenReturn("test");
+    when(fileUploadService.uploadFile(any())).thenReturn(Map.of("uuid", "uuid", "url", "test"));
     MockMultipartFile file =
         new MockMultipartFile("images", "image.jpg", "file", "test".getBytes());
     mockMvc

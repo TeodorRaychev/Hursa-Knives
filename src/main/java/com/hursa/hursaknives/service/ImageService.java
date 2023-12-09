@@ -12,10 +12,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ImageService {
   private final ImageRepository imageRepository;
   private final ProductRepository productRepository;
+  private final CloudinaryIdsService cloudinaryIdsService;
 
-  public ImageService(ImageRepository imageRepository, ProductRepository productRepository) {
+  public ImageService(
+      ImageRepository imageRepository,
+      ProductRepository productRepository,
+      CloudinaryIdsService cloudinaryIdsService) {
     this.imageRepository = imageRepository;
     this.productRepository = productRepository;
+    this.cloudinaryIdsService = cloudinaryIdsService;
   }
 
   public String saveImage(ImageBindingModel imageBindingModel) {
@@ -34,6 +39,7 @@ public class ImageService {
                         "Product with id " + imageBindingModel.productId() + " not found"));
     ImageEntity imageEntity = new ImageEntity();
     imageEntity.setUrl(imageBindingModel.url());
+    imageEntity.setPublicId(imageBindingModel.publicId());
     imageEntity.setProductEntity(productEntity);
     imageRepository.saveAndFlush(imageEntity);
     return imageEntity.getUrl();
@@ -41,6 +47,13 @@ public class ImageService {
 
   @Transactional
   public void delete(Long id) {
+    ImageEntity imageEntity =
+        imageRepository
+            .findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Image with id " + id + " not found"));
     imageRepository.deleteById(id);
+    if (imageRepository.findById(id).isEmpty()) {
+      cloudinaryIdsService.save(imageEntity.getPublicId());
+    }
   }
 }
